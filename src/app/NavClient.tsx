@@ -2,12 +2,10 @@
 
 import { clsx } from 'clsx/lite';
 import { usePathname } from 'next/navigation';
-import Link from 'next/link';
 import Image from 'next/image';
 import AppGrid from '../components/AppGrid';
 import AppToolbar from '@/app/AppToolbar';
 import {
-  PATH_ROOT,
   isPathAdmin,
   isPathSignIn,
 } from '@/app/path';
@@ -65,7 +63,7 @@ export default function NavClient({
                 hideSortControl={isInEmptyState}
               />
               <div className="grow flex justify-end min-w-0">
-                <Link href={PATH_ROOT} aria-label={navTitle} className="group">
+                <a href="https://zhehanz.com/" aria-label={navTitle} className="group">
                   <span className="block relative w-16 h-12">
                     <Image src="/logo-light.svg" alt="ZhehanZ"
                       width={64} height={48} unoptimized priority
@@ -76,7 +74,7 @@ export default function NavClient({
                       className="absolute inset-0 size-full opacity-75 group-hover:opacity-100 hidden dark:block"
                     />
                   </span>
-                </Link>
+                </a>
               </div>
             </nav>]
             : []}
