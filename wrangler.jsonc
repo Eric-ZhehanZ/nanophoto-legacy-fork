@@ -83,6 +83,10 @@
     {
       "pattern": "photos.zhehanz.com",
       "custom_domain": true
+    },
+    {
+      "pattern": "photos.zheha.nz",
+      "custom_domain": true
     }
   ]
 }
