@@ -9,7 +9,7 @@ import {
 } from '@/platforms/fujifilm/simulation';
 import { ExifData, ExifParserFactory } from 'ts-exif-parser';
 import { PhotoFormData } from './form';
-import sharp, { Sharp } from 'sharp';
+import { transformImage } from '@/platforms/images';
 import {
   AUTO_GENERATE_LOCATIONS,
   GEO_PRIVACY_ENABLED,
@@ -202,30 +202,14 @@ const getLocationFormFieldsFromExif = async (
   }
 };
 
-const generateBase64 = async (
-  image: ArrayBuffer,
-  middleware?: (sharp: Sharp) => Sharp,
-) => 
-  (middleware ? middleware(sharp(image)) : sharp(image))
-    .withMetadata()
-    .toFormat('jpeg', { quality: IMAGE_QUALITY_DEFAULT })
-    .toBuffer()
+const generateBase64 = async (image: ArrayBuffer, options: Parameters<typeof transformImage>[1] = {}) =>
+  transformImage(image, { quality: IMAGE_QUALITY_DEFAULT, ...options })
     .then(data => `data:image/jpeg;base64,${data.toString('base64')}`);
 
-const resizeImage = async (
-  image: ArrayBuffer,
-  width = IMAGE_WIDTH_DEFAULT,
-) => 
-  generateBase64(image, sharp => sharp
-    .resize(width),
-  );
-
-const blurImage = async (image: ArrayBuffer) => 
-  generateBase64(image, sharp => sharp
-    .resize(IMAGE_WIDTH_BLUR)
-    .modulate({ saturation: 1.15 })
-    .blur(4),
-  );
+const resizeImage = (image: ArrayBuffer, width = IMAGE_WIDTH_DEFAULT) =>
+  generateBase64(image, { width });
+const blurImage = (image: ArrayBuffer) =>
+  generateBase64(image, { width: IMAGE_WIDTH_BLUR, saturation: 1.15, blur: 4 });
 
 export const getImageBase64FromUrl = async (url: string) => 
   fetch(decodeURIComponent(url))
@@ -257,42 +241,11 @@ export const blurImageFromUrl = async (url: string) =>
       return '';
     });
 
-export const resizeImageToBytes = async (
-  image: ArrayBuffer,
-  width: number,
-  quality = IMAGE_QUALITY_DEFAULT,
-) => 
-  sharp(image)
-    .resize(width)
-    .toFormat('jpeg', { quality })
-    .toBuffer();
+export const resizeImageToBytes = (image: ArrayBuffer, width: number, quality = IMAGE_QUALITY_DEFAULT) =>
+  transformImage(image, { width, quality });
 
-const GPS_NULL_STRING = '-';
-
-export const removeGpsData = async (image: ArrayBuffer) =>
-  sharp(image)
-    .withExifMerge({
-      IFD3: {
-        GPSMapDatum: GPS_NULL_STRING,
-        GPSLatitude: GPS_NULL_STRING,
-        GPSLongitude: GPS_NULL_STRING,
-        GPSDateStamp: GPS_NULL_STRING,
-        GPSDateTime: GPS_NULL_STRING,
-        GPSTimeStamp: GPS_NULL_STRING,
-        GPSAltitude: GPS_NULL_STRING,
-        GPSSatellites: GPS_NULL_STRING,
-        GPSAreaInformation: GPS_NULL_STRING,
-        GPSSpeed: GPS_NULL_STRING,
-        GPSImgDirection: GPS_NULL_STRING,
-        GPSDestLatitude: GPS_NULL_STRING,
-        GPSDestLongitude: GPS_NULL_STRING,
-        GPSDestBearing: GPS_NULL_STRING,
-        GPSDestDistance: GPS_NULL_STRING,
-        GPSHPositioningError: GPS_NULL_STRING,
-      },
-    })
-    .toFormat('jpeg', { quality: PRESERVE_ORIGINAL_UPLOADS ? 95 : 80 })
-    .toBuffer();
+export const removeGpsData = (image: ArrayBuffer) =>
+  transformImage(image, { stripGps: true, quality: PRESERVE_ORIGINAL_UPLOADS ? 95 : 80 });
 
 export const convertFormDataToPhotoDbInsertAndLookupRecipeTitle =
   async (...args: Parameters<typeof convertFormDataToPhotoDbInsert>):

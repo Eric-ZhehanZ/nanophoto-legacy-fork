@@ -51,7 +51,6 @@ export default function AdminAppConfigurationClient({
   isPostgresSslEnabled,
   hasRedisStorage,
   hasStorageProvider,
-  hasVercelBlobStorage,
   hasCloudflareR2Storage,
   hasAwsS3Storage,
   hasMinioStorage,
@@ -86,9 +85,7 @@ export default function AdminAppConfigurationClient({
   imageQuality,
   isBlurEnabled,
   // AI
-  isVercelDeployment,
   hasOpenaiSecretKey,
-  hasAiGatewayModel,
   openaiModel,
   aiContentGenerationProvider,
   isAiContentGenerationEnabled,
@@ -320,13 +317,13 @@ export default function AdminAppConfigurationClient({
                 Postgres:
                 {' '}
                 <AdminLink
-                  href="https://vercel.com/docs/postgres"
+                  href="https://neon.com/docs/import/import-from-postgres"
                   externalIcon
                 >
                   create database
                 </AdminLink>
                 {' '}
-                and connect to project
+                and set DATABASE_URL
               </>)}
           </ChecklistRow>
           <ChecklistRow
@@ -346,21 +343,6 @@ export default function AdminAppConfigurationClient({
               connection: { provider: 'Storage', error: storageError},
             })}
             <div>
-              {hasVercelBlobStorage
-                ? renderSubStatus('checked', 'Vercel Blob: connected')
-                : renderSubStatus('optional', <>
-                  {labelForStorage('vercel-blob')}:
-                  {' '}
-                  <AdminLink
-                    href="https://vercel.com/docs/vercel-blob"
-                    externalIcon
-                  >
-                    create store
-                  </AdminLink>
-                  {' '}
-                  (configured as public) and connect to project
-                </>,
-                )}
               {hasCloudflareR2Storage
                 ? renderSubStatus('checked', 'Cloudflare R2: connected')
                 : renderSubStatus('optional', <>
@@ -518,49 +500,13 @@ export default function AdminAppConfigurationClient({
             {redisError && renderError({
               connection: { provider: 'Redis', error: redisError},
             })}
-            Create Upstash Redis store from storage tab
-            on Vercel dashboard and connect to this project
+            Configure an Upstash Redis database directly
             to enable rate limiting on external services
-          </ChecklistRow>
-          <ChecklistRow
-            title={aiContentGenerationProvider === 'gateway'
-              && isAnalyzingConfiguration
-              ? 'Testing AI Gateway connection'
-              : 'AI (Gateway)'}
-            status={aiContentGenerationProvider === 'gateway'}
-            showWarning={hasAiGatewayModel
-              && aiContentGenerationProvider !== 'gateway'}
-            isPending={aiContentGenerationProvider === 'gateway'
-              && isAnalyzingConfiguration}
-            optional
-          >
-            {aiError
-              && aiContentGenerationProvider === 'gateway'
-              && renderError({
-                connection: { provider: 'AI Gateway', error: aiError},
-              })}
-            Store creator/model ({'"openai/gpt-5.2"'}) to use the
-            {' '}
-            {renderLink(
-              'https://vercel.com/docs/ai-gateway',
-              'Vercel AI Gateway',
-            )}
-            {' '}
-            to enabled AI-powered color analysis and text generation,
-            including an invisible field called
-            {' '}
-            {'"Semantic Description"'}, which supports CMD-K search
-            and image accessibility. 
-            {' '}
-            API key only necessary for non-Vercel deployments.
-            {renderEnvVars(isVercelDeployment
-              ? ['AI_GATEWAY_MODEL']
-              : ['AI_GATEWAY_MODEL', 'AI_GATEWAY_API_KEY'])}
           </ChecklistRow>
           <ChecklistRow
             title={hasOpenaiSecretKey && isAnalyzingConfiguration
               ? 'Testing OpenAI connection'
-              : 'AI (legacy OpenAI)'}
+              : 'AI (OpenAI-compatible)'}
             status={hasOpenaiSecretKey}
             isPending={hasOpenaiSecretKey && isAnalyzingConfiguration}
             optional
@@ -570,7 +516,7 @@ export default function AdminAppConfigurationClient({
               && renderError({
                 connection: { provider: 'OpenAI', error: aiError},
               })}
-            Takes precedence over AI Gateway when configured.
+            Connect directly to your chosen AI provider.
             Optionally override the model
             {' '}
             {'(set OPENAI_MODEL to \'compatible\' to use gpt-4o)'}

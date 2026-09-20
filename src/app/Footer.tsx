@@ -3,9 +3,8 @@
 import { clsx } from 'clsx/lite';
 import AppGrid from '../components/AppGrid';
 import ThemeSwitcher from '@/app/ThemeSwitcher';
+import LanguageSwitcher from './LanguageSwitcher';
 import Link from 'next/link';
-import { SHOW_TEMPLATE_ATTRIBUTION } from '@/app/config';
-import RepoLink from '../components/RepoLink';
 import { usePathname } from 'next/navigation';
 import { PATH_ADMIN_PHOTOS, isPathAdmin, isPathSignIn } from './path';
 import SubmitButtonWithStatus from '@/components/SubmitButtonWithStatus';
@@ -49,6 +48,7 @@ export default function Footer() {
                 'flex gap-x-3 xs:gap-x-4 grow flex-wrap',
                 'w-full min-w-0',
               )}>
+                <a href="https://zhehanz.com/" className="hover:text-stone-900 dark:hover:text-stone-100">↖ ZhehanZ</a>
                 {userEmail || userEmailEager
                   ? <>
                     <Link
@@ -66,13 +66,12 @@ export default function Footer() {
                   </>
                   : isCheckingAuth
                     ? <Spinner size={16} className="translate-y-[2px]" />
-                    : SHOW_TEMPLATE_ATTRIBUTION
-                      ? <RepoLink />
-                      : <Link href={PATH_ADMIN_PHOTOS}>
+                    : <Link href={PATH_ADMIN_PHOTOS}>
                         {appText.nav.admin}
                       </Link>}
               </div>
-              <div className="flex items-center h-10 shrink-0">
+              <div className="flex items-center gap-2 h-10 shrink-0">
+                <LanguageSwitcher />
                 <ThemeSwitcher />
               </div>
             </footer>]

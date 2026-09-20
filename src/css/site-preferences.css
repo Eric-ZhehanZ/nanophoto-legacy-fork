@@ -1,0 +1,8 @@
+/* Cross-origin navigation fades; native View Transitions require one origin. */
+html[data-site-leaving="true"] body { animation: none; opacity: 0; transition: opacity 170ms ease; }
+html[data-site-entering="true"] body { animation: site-arrival 240ms ease both; }
+@keyframes site-arrival { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  html[data-site-entering="true"] body { animation: none; }
+  html[data-site-leaving="true"] body { transition: none; }
+}

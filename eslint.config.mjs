@@ -9,11 +9,14 @@ export default defineConfig([
   ...nextTs,
   // Rules only: eslint-config-next already registers the jsx-a11y plugin,
   // and redefining it errors
-  { rules: jsxA11y.flatConfigs.recommended.rules },
+  { files: ['**/*.{js,jsx,ts,tsx}'], rules: jsxA11y.flatConfigs.recommended.rules },
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:
     '.next/**',
+    '.open-next/**',
+    '.wrangler/**',
+    'backup/**',
     'out/**',
     'build/**',
     'next-env.d.ts',

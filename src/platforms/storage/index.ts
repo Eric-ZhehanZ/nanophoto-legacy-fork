@@ -1,12 +1,4 @@
 import {
-  VERCEL_BLOB_BASE_URL,
-  vercelBlobCopy,
-  vercelBlobDelete,
-  vercelBlobList,
-  vercelBlobPut,
-  vercelBlobUploadFromClient,
-} from './vercel-blob';
-import {
   AWS_S3_BASE_URL,
   awsS3Copy,
   awsS3Delete,
@@ -18,7 +10,6 @@ import {
 import {
   CURRENT_STORAGE,
   HAS_AWS_S3_STORAGE,
-  HAS_VERCEL_BLOB_STORAGE,
   HAS_CLOUDFLARE_R2_STORAGE,
   HAS_MINIO_STORAGE,
 } from '@/app/config';
@@ -53,7 +44,6 @@ export type StorageListItem = {
 export type StorageListResponse = StorageListItem[];
 
 export type StorageType =
-  'vercel-blob' |
   'aws-s3' |
   'cloudflare-r2' |
   'minio';
@@ -92,7 +82,6 @@ export const getFileNamePartsFromStorageUrl = (url: string) => {
 
 export const labelForStorage = (type: StorageType): string => {
   switch (type) {
-    case 'vercel-blob': return 'Vercel Blob';
     case 'cloudflare-r2': return 'Cloudflare R2';
     case 'aws-s3': return 'AWS S3';
     case 'minio': return 'MinIO';
@@ -101,7 +90,6 @@ export const labelForStorage = (type: StorageType): string => {
 
 export const baseUrlForStorage = (type: StorageType) => {
   switch (type) {
-    case 'vercel-blob': return VERCEL_BLOB_BASE_URL;
     case 'cloudflare-r2': return CLOUDFLARE_R2_BASE_URL_PUBLIC;
     case 'aws-s3': return AWS_S3_BASE_URL;
     case 'minio': return MINIO_BASE_URL;
@@ -116,7 +104,7 @@ export const storageTypeFromUrl = (url: string): StorageType => {
   } else if (isUrlFromMinio(url)) {
     return 'minio';
   } else {
-    return 'vercel-blob';
+    throw new Error('Unrecognized storage origin');
   }
 };
 
@@ -184,13 +172,7 @@ export const uploadFileFromClient = async (
     ? `${_fileName}-${generateStorageId()}.${extension}`
     : `${_fileName}.${extension}`;
 
-  return (
-    CURRENT_STORAGE === 'cloudflare-r2' ||
-    CURRENT_STORAGE === 'aws-s3' ||
-    CURRENT_STORAGE === 'minio'
-  )
-    ? uploadFromClientViaPresignedUrl(file, fileName, options)
-    : vercelBlobUploadFromClient(file, fileName, options);
+  return uploadFromClientViaPresignedUrl(file, fileName, options);
 };
 
 export const putFile = (
@@ -198,8 +180,6 @@ export const putFile = (
   fileName: string,
 ) => {
   switch (CURRENT_STORAGE) {
-    case 'vercel-blob':
-      return vercelBlobPut(file, fileName);
     case 'cloudflare-r2':
       return cloudflareR2Put(file, fileName);
     case 'aws-s3':
@@ -215,12 +195,6 @@ export const copyFile = (
 ): Promise<string> => {
   const { fileName } = getFileNamePartsFromStorageUrl(originUrl);
   switch (storageTypeFromUrl(originUrl)) {
-    case 'vercel-blob':
-      return vercelBlobCopy(
-        originUrl,
-        destinationFileName,
-        false,
-      );
     case 'cloudflare-r2':
       return cloudflareR2Copy(
         fileName,
@@ -245,8 +219,6 @@ export const copyFile = (
 export const deleteFile = (url: string) => {
   const { fileName } = getFileNamePartsFromStorageUrl(url);
   switch (storageTypeFromUrl(url)) {
-    case 'vercel-blob':
-      return vercelBlobDelete(url);
     case 'cloudflare-r2':
       return cloudflareR2Delete(fileName);
     case 'aws-s3':
@@ -274,10 +246,6 @@ export const moveFile = async (
 export const getStorageUrlsForPrefix = async (prefix = '') => {
   const urls: StorageListResponse = [];
 
-  if (HAS_VERCEL_BLOB_STORAGE) {
-    urls.push(...await vercelBlobList(prefix)
-      .catch(() => []));
-  }
   if (HAS_AWS_S3_STORAGE) {
     urls.push(...await awsS3List(prefix)
       .catch(() => []));

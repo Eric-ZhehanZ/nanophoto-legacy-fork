@@ -7,3 +7,6 @@ import { TEXT as EN_US } from '../locales/en-us';
 export const AppTextContext = createContext(generateAppTextState(EN_US));
 
 export const useAppText = () => use(AppTextContext);
+
+export const AppLanguageContext = createContext<'en' | 'zh'>('en');
+export const useAppLanguage = () => use(AppLanguageContext);

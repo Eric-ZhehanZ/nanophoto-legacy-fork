@@ -1,6 +1,6 @@
-import { APP_LOCALE } from '@/app/config';
+import { getRequestLocale } from '../request';
 import { getTextForLocale } from '..';
 import { generateAppTextState } from '.';
 
 export const getAppText = () =>
-  getTextForLocale(APP_LOCALE).then(generateAppTextState);
+  getRequestLocale().then(getTextForLocale).then(generateAppTextState);

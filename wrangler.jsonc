@@ -1,0 +1,88 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "nanophoto",
+  "main": ".open-next/worker.js",
+  "account_id": "0b33d8900e842c048562a4b70d9ecee4",
+  "compatibility_date": "2026-09-19",
+  "compatibility_flags": [
+    "nodejs_compat",
+    "global_fetch_strictly_public"
+  ],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "images": {
+    "binding": "IMAGES"
+  },
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "nanophoto"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "NEXT_INC_CACHE_R2_BUCKET",
+      "bucket_name": "nanophoto-cache"
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "NEXT_CACHE_DO_QUEUE",
+        "class_name": "DOQueueHandler"
+      },
+      {
+        "name": "NEXT_TAG_CACHE_DO_SHARDED",
+        "class_name": "DOShardedTagCache"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": [
+        "DOQueueHandler",
+        "DOShardedTagCache"
+      ]
+    }
+  ],
+  "observability": {
+    "enabled": true
+  },
+  "vars": {
+    "NEXT_PUBLIC_CLOUDFLARE_R2_ACCOUNT_ID": "0b33d8900e842c048562a4b70d9ecee4",
+    "NEXT_PUBLIC_CLOUDFLARE_R2_BUCKET": "nanophoto",
+    "NEXT_PUBLIC_CLOUDFLARE_R2_PUBLIC_DOMAIN": "photos-cdn.zhehanz.com",
+    "NEXT_PUBLIC_COLOR_SORT": "1",
+    "NEXT_PUBLIC_DOMAIN_SHARE": "photos.zheha.nz",
+    "NEXT_PUBLIC_HIDE_REPO_LINK": "1",
+    "NEXT_PUBLIC_NAV_CAPTION": "Fleeting Impressions, Meaning Made or Unmade",
+    "NEXT_PUBLIC_NAV_SORT_CONTROL": "menu",
+    "NEXT_PUBLIC_NAV_TITLE": "ZhehanZ Photos",
+    "NEXT_PUBLIC_PAGE_ABOUT": "https://zhehanz.com",
+    "NEXT_PUBLIC_PRESERVE_ORIGINAL_UPLOADS": "1",
+    "NEXT_PUBLIC_PUBLIC_API": "1",
+    "NEXT_PUBLIC_SITE_DOMAIN": "photos.zhehanz.com",
+    "NEXT_PUBLIC_SITE_FEEDS": "1",
+    "NEXT_PUBLIC_SITE_TITLE": "ZhehanZ Photos",
+    "NEXT_PUBLIC_SOCIAL_NETWORKS": "all",
+    "NEXT_PUBLIC_DOMAIN": "photos.zhehanz.com",
+    "NEXT_PUBLIC_STORAGE_PREFERENCE": "cloudflare-r2",
+    "NEXT_PUBLIC_DEFAULT_THEME": "system",
+    "NEXT_PUBLIC_LOCALE": "en-us",
+    "AUTH_TRUST_HOST": "true"
+  },
+  "keep_names": false,
+  "limits": {
+    "cpu_ms": 30000
+  },
+  "workers_dev": true,
+  "routes": [
+    {
+      "pattern": "photos.zhehanz.com",
+      "custom_domain": true
+    }
+  ]
+}

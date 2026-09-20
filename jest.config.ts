@@ -10,10 +10,15 @@ const createJestConfig = nextJest({
 // Add any custom config to be passed to Jest
 const config: Config = {
   coverageProvider: 'v8',
+  modulePathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/.open-next/', '<rootDir>/.wrangler/'],
   testEnvironment: 'jsdom',
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
 };
  
 // createJestConfig is exported this way to ensure that
 // next/jest can load the Next.js config which is async
-export default createJestConfig(config);
+export default async () => ({
+  ...await createJestConfig(config)(),
+  // Existing dependencies now ship ESM; let Next's SWC transform them in Jest.
+  transformIgnorePatterns: [],
+});

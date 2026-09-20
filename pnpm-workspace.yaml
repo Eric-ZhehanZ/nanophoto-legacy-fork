@@ -2,10 +2,11 @@ packages: []
 allowBuilds:
   '@parcel/watcher': true
   '@tailwindcss/oxide': true
-  '@vercel/speed-insights': true
+  esbuild: true
   oxc-resolver: true
   sharp: true
   unrs-resolver: true
+  workerd: true
 minimumReleaseAgeExclude:
   - '@ai-sdk/gateway@4.0.8 || 4.0.22 || 4.0.52 || 4.0.64 || 4.0.67 || 4.0.80 || 4.0.82'
   - '@ai-sdk/openai@4.0.5 || 4.0.47 || 4.0.50 || 4.0.67'

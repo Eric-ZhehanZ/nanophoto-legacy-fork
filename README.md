@@ -1,3 +1,9 @@
+# ZhehanZ Photos
+
+This fork runs on Cloudflare Workers, R2 and Images with portable PostgreSQL. See [deployment, backups and migration](docs/cloudflare.md). The upstream documentation below describes the original template; use the Cloudflare guide for this deployment.
+
+---
+
 # 📷 `EXIF` Photo Blog
 
 https://github.com/sambecker/exif-photo-blog/assets/169298/4253ea54-558a-4358-8834-89943cfbafb4

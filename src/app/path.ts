@@ -90,7 +90,6 @@ export const PATH_OG_SAMPLE             = `${PATH_OG}/sample`;
 
 // API paths
 export const PATH_API_STORAGE = `${PATH_API}/storage`;
-export const PATH_API_VERCEL_BLOB_UPLOAD = `${PATH_API_STORAGE}/vercel-blob`;
 export const PATH_API_PRESIGNED_URL = `${PATH_API_STORAGE}/presigned-url`;
 
 // Parameters

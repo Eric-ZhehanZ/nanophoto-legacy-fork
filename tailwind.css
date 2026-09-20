@@ -4,6 +4,7 @@
 
 @import './src/css/sonner.css';
 @import './src/css/viewerjs.css';
+@import './src/css/site-preferences.css';
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -178,7 +179,7 @@ html {
 /* Background */
 @utility bg-main {
   @apply
-    bg-white dark:bg-black
+    bg-[#f5f5f4] dark:bg-[#1c1917]
 }
 @utility bg-medium {
   @apply

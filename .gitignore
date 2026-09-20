@@ -43,3 +43,8 @@ next-env.d.ts
 /backup
 /app/restore
 temp.jpg
+
+# Cloudflare local state and secrets
+.open-next/
+.wrangler/
+.dev.vars*

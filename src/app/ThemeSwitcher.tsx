@@ -14,7 +14,11 @@ export default function ThemeSwitcher () {
 
   const appText = useAppText();
 
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme: setNextTheme } = useTheme();
+  const setTheme = (value: string) => {
+    window.SitePreferences?.setTheme(value);
+    setNextTheme(value);
+  };
 
   return (
     <Switcher

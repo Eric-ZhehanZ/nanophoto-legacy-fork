@@ -20,7 +20,9 @@ import { labelForFilm } from '@/film';
 import { formatFocalLength } from '@/focal';
 import { AppTextState } from '@/i18n/state';
 import { formatLensText } from '@/lens';
-import { Photo } from '@/photo';
+import { Photo, parseCachedPhotosDates } from '@/photo';
+import { unstable_cache } from 'next/cache';
+import { KEY_LIBRARY, KEY_PHOTOS } from '@/cache';
 import { getPhotoCached, getPhotosCached } from '@/photo/cache';
 import {
   PHOTO_FOLDER_MAX_PHOTOS,
@@ -167,6 +169,27 @@ const getFolderQueriesForCategory = (
   }
 };
 
+// Fetch one cached folder bundle on repeat visits instead of one remote
+// cache read per tag, camera, and lens. Bound cold-cache database fan-out.
+const getFolderPhotosCached = unstable_cache(
+  async (options: PhotoQueryOptions[]) => {
+    const results: Photo[][] = [];
+    for (let start = 0; start < options.length; start += 4) {
+      results.push(...await Promise.all(options.slice(start, start + 4)
+        .map(option => getPhotosCached({
+          ...option,
+          sortBy: 'random',
+          limit: PHOTO_FOLDER_MAX_PHOTOS + PHOTO_FOLDER_PEEK_PHOTOS,
+        }))));
+    }
+    return results.map(photos => photos.map(photo => ({
+      ...photo, blurData: undefined,
+    })));
+  },
+  ['library-folder-photos-v1'],
+  { tags: [KEY_PHOTOS, KEY_LIBRARY], revalidate: 3600 },
+);
+
 export const getLibraryFolderRows = async (
   categories: PhotoSetCategories,
   appText: AppTextState,
@@ -198,14 +221,9 @@ export const getLibraryFolderRows = async (
       key !== 'recents',
     );
 
-  const folderPhotos = await Promise.all(
-    rows.flatMap(row => row.queries).map(({ options }) =>
-      getPhotosCached({
-        ...options,
-        sortBy: 'random',
-        limit: PHOTO_FOLDER_MAX_PHOTOS + PHOTO_FOLDER_PEEK_PHOTOS,
-      }).catch(() => [] as Photo[])),
-  );
+  const folderPhotos = (await getFolderPhotosCached(
+    rows.flatMap(row => row.queries).map(({ options }) => options),
+  )).map(parseCachedPhotosDates);
 
   let photoIndex = 0;
 
@@ -219,7 +237,7 @@ export const getLibraryFolderRows = async (
           caption: query.caption,
           path: query.path,
           count: query.count,
-          // Omit blurData so /library ISR stays under Vercel's 19MB page limit
+          // Folder previews do not need repeated embedded blur placeholders.
           photos: (folderPhotos[photoIndex++] ?? [])
             .map(({ blurData: _blurData, ...photo }) => photo),
         }))

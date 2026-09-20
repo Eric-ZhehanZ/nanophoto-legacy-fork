@@ -1,9 +1,9 @@
 import {
-  VERCEL_GIT_BRANCH,
-  VERCEL_GIT_COMMIT_SHA,
-  VERCEL_GIT_REPO_OWNER,
-  VERCEL_GIT_REPO_SLUG,
-  IS_VERCEL_GIT_PROVIDER_GITHUB,
+  GIT_BRANCH,
+  GIT_COMMIT_SHA,
+  GIT_REPO_OWNER,
+  GIT_REPO_SLUG,
+  IS_GIT_PROVIDER_GITHUB,
   IS_DEVELOPMENT,
   APP_CONFIGURATION,
   MATTE_PHOTOS,
@@ -69,12 +69,12 @@ export interface PhotoStats {
 }
 
 export const getGitHubMetaForCurrentApp = () =>
-  (IS_VERCEL_GIT_PROVIDER_GITHUB || IS_DEVELOPMENT)
+  (IS_GIT_PROVIDER_GITHUB || IS_DEVELOPMENT)
     ? getGitHubMeta({
-      owner: VERCEL_GIT_REPO_OWNER,
-      repo: VERCEL_GIT_REPO_SLUG,
-      branch: VERCEL_GIT_BRANCH,
-      commit: VERCEL_GIT_COMMIT_SHA,
+      owner: GIT_REPO_OWNER,
+      repo: GIT_REPO_SLUG,
+      branch: GIT_BRANCH,
+      commit: GIT_COMMIT_SHA,
     })
     : undefined;
 

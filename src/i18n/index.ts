@@ -31,7 +31,7 @@ const LOCALE_TEXT_IMPORTS: Record<
 };
 
 export const getTextForLocale = async (locale: string): Promise<I18N> => {
-  const text = EN_US;
+  const text = { ...EN_US };
   Object.entries(
     await LOCALE_TEXT_IMPORTS[locale.toLocaleLowerCase()]?.() ?? {},
   )

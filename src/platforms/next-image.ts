@@ -1,8 +1,7 @@
+import cloudflareImageLoader from './cloudflare-image-loader';
 import {
   BASE_URL,
   IMAGE_QUALITY,
-  VERCEL_BYPASS_KEY,
-  VERCEL_BYPASS_SECRET,
 } from '@/app/config';
 
 // Explicity defined next.config.js `imageSizes`
@@ -19,7 +18,6 @@ export const getNextImageUrlForRequest = ({
   size,
   quality = IMAGE_QUALITY,
   baseUrl = BASE_URL,
-  addBypassSecret,
 }: {
   imageUrl: string
   size: NextImageSize
@@ -27,15 +25,13 @@ export const getNextImageUrlForRequest = ({
   baseUrl?: string
   addBypassSecret?: boolean
 }) => {
+  const resized = cloudflareImageLoader({ src: imageUrl, width: size, quality });
+  if (resized !== imageUrl) return resized;
   const url = new URL(`${baseUrl}/_next/image`);
 
   url.searchParams.append('url', imageUrl);
   url.searchParams.append('w', size.toString());
   url.searchParams.append('q', quality.toString());
-
-  if (addBypassSecret && VERCEL_BYPASS_SECRET) {
-    url.searchParams.append(VERCEL_BYPASS_KEY, VERCEL_BYPASS_SECRET);
-  }
 
   return url.toString();
 };

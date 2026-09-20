@@ -2,14 +2,8 @@ import { removeUrlProtocol } from '@/utility/url';
 import type { NextConfig } from 'next';
 import { RemotePattern } from 'next/dist/shared/lib/image-config';
 import path from 'path';
-
-const VERCEL_BLOB_STORE_ID = process.env.BLOB_READ_WRITE_TOKEN?.match(
-  /^vercel_blob_rw_([a-z0-9]+)_[a-z0-9]+$/i,
-)?.[1].toLowerCase();
-
-const HOSTNAME_VERCEL_BLOB = VERCEL_BLOB_STORE_ID
-  ? `${VERCEL_BLOB_STORE_ID}.public.blob.vercel-storage.com`
-  : undefined;
+import { initOpenNextCloudflareForDev } from '@opennextjs/cloudflare';
+initOpenNextCloudflareForDev();
 
 const HOSTNAME_CLOUDFLARE_R2 =
   process.env.NEXT_PUBLIC_CLOUDFLARE_R2_PUBLIC_DOMAIN;
@@ -48,9 +42,6 @@ const remotePatterns: RemotePattern[] = [
   },
 ];
 
-if (HOSTNAME_VERCEL_BLOB) {
-  remotePatterns.push(generateRemotePattern(HOSTNAME_VERCEL_BLOB));
-}
 if (HOSTNAME_CLOUDFLARE_R2) {
   remotePatterns.push(generateRemotePattern(HOSTNAME_CLOUDFLARE_R2));
 }
@@ -76,12 +67,17 @@ const IMAGE_QUALITY =
 
 const nextConfig: NextConfig = {
   images: {
+    loader: 'custom',
+    loaderFile: './src/platforms/cloudflare-image-loader.ts',
     imageSizes: [100, 200],
     qualities: [75, IMAGE_QUALITY],
     remotePatterns,
     minimumCacheTTL: 31536000,
   },
   serverExternalPackages: ['exifr'],
+  outputFileTracingIncludes: {
+    '/*': ['node_modules/.pnpm/pg-cloudflare*/node_modules/pg-cloudflare/**/*'],
+  },
   turbopack: {
     resolveAlias: {
       [LOCALE_ALIAS]: `@/${LOCALE_DYNAMIC}`,

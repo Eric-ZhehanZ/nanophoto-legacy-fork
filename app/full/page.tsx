@@ -2,13 +2,12 @@ import { generateOgImageMetaForPhotos } from '@/photo';
 import PhotosEmptyState from '@/photo/PhotosEmptyState';
 import { Metadata } from 'next/types';
 import { cache } from 'react';
-import { getPhotos } from '@/photo/query';
+import { getPhotosCached as getPhotos } from '@/photo/cache';
 import PhotoFullPage from '@/photo/PhotoFullPage';
 import { getPhotosMetaCached } from '@/photo/cache';
 import { USER_DEFAULT_SORT_OPTIONS } from '@/app/config';
 import { FEED_META_QUERY_OPTIONS, feedQueryOptions } from '@/feed';
 
-export const dynamic = 'force-static';
 export const maxDuration = 60;
 
 const getPhotosCached = cache(() => getPhotos(feedQueryOptions({

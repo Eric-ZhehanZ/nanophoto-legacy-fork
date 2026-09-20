@@ -9,7 +9,7 @@ import {
 import Tooltip from '@/components/Tooltip';
 import { toastSuccess } from '@/toast';
 import { useAppText } from '@/i18n/state/client';
-import { MouseEvent } from 'react';
+import { KeyboardEvent, MouseEvent } from 'react';
 
 const renderColor = (letter: string, value: number, shouldRound?: boolean) => (
   <div className="flex gap-2">
@@ -52,7 +52,7 @@ export default function ColorDot({
     </>
     : 'No Color';
 
-  const onCopy = (e: MouseEvent) => {
+  const onCopy = (e: MouseEvent | KeyboardEvent) => {
     e.preventDefault();
     e.stopPropagation();
     if (!oklch) { return; }
@@ -84,7 +84,13 @@ export default function ColorDot({
           ? color
           : convertOklchToCss(color) }
         : undefined}
+      role={canCopy ? 'button' : undefined}
+      tabIndex={canCopy ? 0 : undefined}
+      aria-label={canCopy ? appText.utility.copyPhrase('OKLCH') : undefined}
       onClick={canCopy ? onCopy : undefined}
+      onKeyDown={canCopy ? event => {
+        if (event.key === 'Enter' || event.key === ' ') onCopy(event);
+      } : undefined}
     >
       {!color &&
         <div className={clsx(

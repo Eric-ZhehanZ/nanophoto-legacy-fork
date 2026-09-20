@@ -7,7 +7,7 @@ import { clsx}  from 'clsx/lite';
 import Image, { ImageProps } from 'next/image';
 import { RefObject, useCallback, useEffect, useRef, useState } from 'react';
 
-export default function ImageWithFallback({
+function ImageWithFallbackInner({
   ref: refProp,
   className,
   classNameImage = 'object-cover h-full',
@@ -27,11 +27,22 @@ export default function ImageWithFallback({
 
   const [isLoading, setIsLoading] = useState(true);
   const [didError, setDidError] = useState(false);
+  const [useOriginal, setUseOriginal] = useState(false);
   const [fadeFallbackTransition, setFadeFallbackTransition] =
     useState(!hasLoadedWithAnimations);
 
-  const onLoad = useCallback(() => setIsLoading(false), []);
-  const onError = useCallback(() => setDidError(true), []);
+  const onLoad = useCallback(() => {
+    setIsLoading(false);
+    setDidError(false);
+  }, []);
+  const onError = useCallback(() => {
+    if (!useOriginal && !props.unoptimized) {
+      // A resizing outage must not leave a permanent blurred placeholder.
+      setUseOriginal(true);
+    } else {
+      setDidError(true);
+    }
+  }, [useOriginal, props.unoptimized]);
 
   useEffect(() => {
     if (
@@ -62,6 +73,7 @@ export default function ImageWithFallback({
       <Image ref={refProp ?? ref} {...{
         ...props,
         priority,
+        unoptimized: useOriginal || props.unoptimized,
         className: classNameImage,
         onLoad,
         onError,
@@ -95,4 +107,11 @@ export default function ImageWithFallback({
       </div>
     </div>
   );
+}
+
+export default function ImageWithFallback(
+  props: Parameters<typeof ImageWithFallbackInner>[0],
+) {
+  const key = typeof props.src === 'string' ? props.src : JSON.stringify(props.src);
+  return <ImageWithFallbackInner key={key} {...props} />;
 }

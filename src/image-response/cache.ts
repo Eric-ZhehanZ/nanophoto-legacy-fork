@@ -1,5 +1,5 @@
 export const getImageResponseCacheControlHeaders = (
-  shouldCache = process.env.NEXT_PUBLIC_VERCEL_ENV === 'production',
+  shouldCache = process.env.NODE_ENV === 'production',
 ) => {
   return {
     'Cache-Control': shouldCache

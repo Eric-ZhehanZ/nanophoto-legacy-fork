@@ -98,7 +98,7 @@ export const cloudflareR2List = async (
     })) ?? []);
 
 export const cloudflareR2Delete = async (Key: string) => {
-  cloudflareR2Client().send(new DeleteObjectCommand({
+  return cloudflareR2Client().send(new DeleteObjectCommand({
     Bucket: CLOUDFLARE_R2_BUCKET,
     Key,
   }));
@@ -113,6 +113,6 @@ export const cloudflareR2GetSignedUrl = (
   const command = method === 'GET'
     ? new GetObjectCommand({ Bucket: CLOUDFLARE_R2_BUCKET, Key })
     // eslint-disable-next-line max-len
-    : new PutObjectCommand({ Bucket: CLOUDFLARE_R2_BUCKET, Key, ACL: 'public-read' });
+    : new PutObjectCommand({ Bucket: CLOUDFLARE_R2_BUCKET, Key });
   return getSignedUrl(client, command, { expiresIn });
 };

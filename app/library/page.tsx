@@ -14,8 +14,15 @@ import { getAllPhotoIdsWithUpdatedAt } from '@/photo/query';
 import { TAG_FAVS } from '@/tag';
 import { safelyParseFormattedHtml } from '@/utility/html';
 import { max } from 'date-fns';
+import { unstable_cache } from 'next/cache';
+import { KEY_PHOTOS } from '@/cache';
 
-export const dynamic = 'force-static';
+const getPhotoUpdatesCached = unstable_cache(
+  getAllPhotoIdsWithUpdatedAt,
+  ['library-photo-updates'],
+  { tags: [KEY_PHOTOS], revalidate: 3600 },
+);
+
 
 export default async function LibraryPage() {  
   const appText = await getAppText();
@@ -35,7 +42,9 @@ export default async function LibraryPage() {
         photoAvatar: undefined,
       })),
     getPhotosMetaCached().catch(() => {}),
-    getAllPhotoIdsWithUpdatedAt().catch(() => []),
+    getPhotoUpdatesCached()
+      .then(rows => rows.map(row => ({ ...row, updatedAt: new Date(row.updatedAt) })))
+      .catch(() => []),
     getDataForCategoriesCached().catch(() => (NULL_CATEGORY_DATA)),
   ]);
 

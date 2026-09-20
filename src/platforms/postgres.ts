@@ -1,16 +1,7 @@
 import { POSTGRES_SSL_ENABLED } from '@/app/config';
 import { removeParamsFromUrl } from '@/utility/url';
-import { Pool, QueryResult, QueryResultRow } from 'pg';
-
-const pool = new Pool({
-  ...process.env.POSTGRES_URL && {
-    connectionString: removeParamsFromUrl(
-      process.env.POSTGRES_URL,
-      ['sslmode'],
-    ),
-  },
-  ...POSTGRES_SSL_ENABLED && { ssl: true },
-});
+import { Client, QueryResultRow } from 'pg';
+import { getCloudflareContext } from '@opennextjs/cloudflare';
 
 export type Primitive = string | number | boolean | undefined | null;
 
@@ -18,42 +9,33 @@ export const query = async <T extends QueryResultRow = any>(
   queryString: string,
   values: Primitive[] = [],
 ) => {
-  const client = await pool.connect();
-  let response: QueryResult<T>;
+  let hyperdrive: string | undefined;
+  try { hyperdrive = getCloudflareContext().env.HYPERDRIVE?.connectionString; }
+  catch { /* Plain Node.js development and portable self-hosting. */ }
+  const connectionString = hyperdrive || process.env.DATABASE_URL || process.env.POSTGRES_URL;
+  if (!connectionString) throw new Error('Configure DATABASE_URL or POSTGRES_URL');
+  const client = new Client({
+    connectionString: hyperdrive ? hyperdrive : removeParamsFromUrl(connectionString, ['sslmode']),
+    ...!hyperdrive && POSTGRES_SSL_ENABLED && { ssl: true },
+    connectionTimeoutMillis: 10_000,
+  });
   try {
-    response = await client.query<T>(queryString, values);
-  } catch (error) {
-    throw error;
+    await client.connect();
+    return await client.query<T>(queryString, values);
   } finally {
-    client.release();
+    await client.end();
   }
-  return response;
 };
 
 export const sql = <T extends QueryResultRow>(
   strings: TemplateStringsArray,
   ...values: Primitive[]
 ) => {
-  if (!isTemplateStringsArray(strings) || !Array.isArray(values)) {
+  if (!Array.isArray(strings) || !('raw' in strings)) {
     throw new Error('Invalid template literal argument');
   }
-
   let result = strings[0] ?? '';
-
-  for (let i = 1; i < strings.length; i++) {
-    result += `$${i}${strings[i] ?? ''}`;
-  }
-
+  for (let i = 1; i < strings.length; i++) result += `$${i}${strings[i] ?? ''}`;
   return query<T>(result, values);
 };
-
-const isTemplateStringsArray = (
-  strings: unknown,
-): strings is TemplateStringsArray => {
-  return (
-    Array.isArray(strings) && 'raw' in strings && Array.isArray(strings.raw)
-  );
-};
-
-export const testDatabaseConnection = async () =>
-  query('SELECt COUNT(*) FROM pg_stat_user_tables');
+export const testDatabaseConnection = async () => query('SELECT 1');

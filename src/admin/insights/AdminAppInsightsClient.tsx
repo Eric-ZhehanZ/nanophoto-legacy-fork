@@ -12,8 +12,8 @@ import {
   TEMPLATE_REPO_BRANCH,
   TEMPLATE_REPO_OWNER,
   TEMPLATE_REPO_NAME,
-  VERCEL_GIT_COMMIT_SHA_SHORT,
-  VERCEL_GIT_COMMIT_MESSAGE,
+  GIT_COMMIT_SHA_SHORT,
+  GIT_COMMIT_MESSAGE,
   TEMPLATE_REPO_URL_FORK,
   TEMPLATE_REPO_URL_README,
   CATEGORY_VISIBILITY,
@@ -281,10 +281,10 @@ export default function AdminAppInsightsClient({
               className="flex items-center gap-2"
             >
               <span className="text-medium hidden sm:inline-block">
-                {VERCEL_GIT_COMMIT_SHA_SHORT ?? DEBUG_COMMIT_SHA}
+                {GIT_COMMIT_SHA_SHORT ?? DEBUG_COMMIT_SHA}
               </span>
               <span className="truncate">
-                {VERCEL_GIT_COMMIT_MESSAGE ?? DEBUG_COMMIT_MESSAGE}
+                {GIT_COMMIT_MESSAGE ?? DEBUG_COMMIT_MESSAGE}
               </span>
               <span className="text-dim">
                 (<ResponsiveText

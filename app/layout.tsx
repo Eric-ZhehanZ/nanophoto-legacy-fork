@@ -1,18 +1,14 @@
-import { Analytics } from '@vercel/analytics/react';
-import { SpeedInsights } from '@vercel/speed-insights/react';
 import { clsx } from 'clsx/lite';
 import {
   BASE_URL,
-  DEFAULT_THEME,
   PRESERVE_ORIGINAL_UPLOADS,
   META_DESCRIPTION,
   META_TITLE,
-  HTML_LANG,
   SITE_FEEDS_ENABLED,
   ADMIN_DEBUG_TOOLS_ENABLED,
   ADMIN_AI_MODEL_DEBUG_ENABLED,
   PAGE_SCRIPT_URLS,
-  VERCEL_GIT_COMMIT_SHA_SHORT,
+  GIT_COMMIT_SHA_SHORT,
   DEBUG_OUTPUTS_ENABLED,
 } from '@/app/config';
 import AppStateProvider from '@/app/AppStateProvider';
@@ -39,6 +35,8 @@ import AdminEditTitlesPanel from '@/admin/edit-titles/AdminEditTitlesPanel';
 import Script from 'next/script';
 
 import '../tailwind.css';
+import { getRequestLanguage } from '@/i18n/request';
+import SitePreferences from '@/app/SitePreferences';
 
 export const metadata: Metadata = {
   title: META_TITLE,
@@ -52,32 +50,16 @@ export const metadata: Metadata = {
     title: META_TITLE,
     description: META_DESCRIPTION,
   },
-  icons: [{
-    url: '/favicon.ico',
-    rel: 'icon',
-    type: 'image/png',
-    sizes: '180x180',
-  }, {
-    url: '/favicons/light.png',
-    rel: 'icon',
-    media: '(prefers-color-scheme: light)',
-    type: 'image/png',
-    sizes: '32x32',
-  }, {
-    url: '/favicons/dark.png',
-    rel: 'icon',
-    media: '(prefers-color-scheme: dark)',
-    type: 'image/png',
-    sizes: '32x32',
-  }, {
-    url: '/favicons/apple-touch-icon.png',
-    rel: 'icon',
-    type: 'image/png',
-    sizes: '180x180',
-  }],
+  icons: {
+    icon: [
+      { url: '/favicons/light.png', type: 'image/png', media: '(prefers-color-scheme: light)' },
+      { url: '/favicons/dark.png', type: 'image/png', media: '(prefers-color-scheme: dark)' },
+    ],
+    apple: '/favicons/apple-touch-icon.png',
+  },
   ...DEBUG_OUTPUTS_ENABLED && {
     other: {
-      'build': VERCEL_GIT_COMMIT_SHA_SHORT ?? 'unknown',
+      'build': GIT_COMMIT_SHA_SHORT ?? 'unknown',
     },
   },
   ...SITE_FEEDS_ENABLED && {
@@ -90,18 +72,22 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const language = await getRequestLanguage();
   return (
     <html
-      lang={HTML_LANG}
+      lang={language === 'zh' ? 'zh-Hans' : 'en'}
       // Suppress hydration errors due to next-themes behavior
       suppressHydrationWarning
     >
       <head>
+        {/* Import the shared cookie before next-themes and the first paint. */}
+        {/* eslint-disable-next-line @next/next/no-sync-scripts */}
+        <script src="/site-preferences.js" data-cfasync="false" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
       </head>
       <body className={clsx(
@@ -116,7 +102,8 @@ export default function RootLayout({
             <SelectPhotosProvider>
               <EditTitlesProvider>
                 <ThemeColors />
-                <ThemeProvider attribute="class" defaultTheme={DEFAULT_THEME}>
+                <ThemeProvider attribute="class" defaultTheme="system">
+                  <SitePreferences language={language} />
                   <SwrConfigClient>
                     <SharedHoverProvider>
                       <div className={clsx(
@@ -156,8 +143,6 @@ export default function RootLayout({
                       <CommandK />
                     </SharedHoverProvider>
                   </SwrConfigClient>
-                  <Analytics debug={false} />
-                  <SpeedInsights debug={false} />
                   <PhotoEscapeHandler />
                   <ToasterWithThemes />
                 </ThemeProvider>

@@ -34,77 +34,27 @@ export const TEMPLATE_REPO_URL_FORK = `${TEMPLATE_REPO_URL}/fork`;
 export const TEMPLATE_REPO_URL_README =
   `${TEMPLATE_REPO_URL}?tab=readme-ov-file`;
 
-export const VERCEL_GIT_PROVIDER =
-  process.env.NEXT_PUBLIC_VERCEL_GIT_PROVIDER;
-export const VERCEL_GIT_REPO_OWNER =
-  process.env.NEXT_PUBLIC_VERCEL_GIT_REPO_OWNER;
-export const VERCEL_GIT_REPO_SLUG =
-  process.env.NEXT_PUBLIC_VERCEL_GIT_REPO_SLUG;
-export const VERCEL_GIT_BRANCH = process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF;
-export const VERCEL_GIT_COMMIT_MESSAGE =
-  process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_MESSAGE;
-export const VERCEL_GIT_COMMIT_SHA =
-  process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA;
-export const VERCEL_GIT_COMMIT_SHA_SHORT = VERCEL_GIT_COMMIT_SHA
-  ? VERCEL_GIT_COMMIT_SHA.slice(0, 7)
-  : undefined;
-export const IS_VERCEL_GIT_PROVIDER_GITHUB = VERCEL_GIT_PROVIDER === 'github';
-export const VERCEL_GIT_COMMIT_URL = IS_VERCEL_GIT_PROVIDER_GITHUB
-  // eslint-disable-next-line max-len
-  ? `https://github.com/${VERCEL_GIT_REPO_OWNER}/${VERCEL_GIT_REPO_SLUG}/commit/${VERCEL_GIT_COMMIT_SHA}`
-  : undefined;
-
-export const VERCEL_ENV = process.env.NEXT_PUBLIC_VERCEL_ENV;
-export const VERCEL_PRODUCTION_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL;
-export const VERCEL_DEPLOYMENT_URL = process.env.NEXT_PUBLIC_VERCEL_URL;
-export const VERCEL_BRANCH_URL = process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL;
-// Last resort: cannot be used reliably
-export const VERCEL_PROJECT_URL = VERCEL_BRANCH_URL && VERCEL_GIT_BRANCH
-  ? `${VERCEL_BRANCH_URL.split(`-git-${VERCEL_GIT_BRANCH}-`)[0]}.vercel.app`
-  : undefined;
-
-export const IS_PRODUCTION = process.env.NODE_ENV === 'production' && (
-  // Make environment checks resilient to non-Vercel deployments
-  VERCEL_ENV === 'production' ||
-  !VERCEL_ENV
-);
+// Provider-independent deployment metadata.
+export const GIT_PROVIDER = 'github';
+export const GIT_REPO_OWNER = 'Eric-ZhehanZ';
+export const GIT_REPO_SLUG = 'nanophoto';
+export const GIT_BRANCH = process.env.NEXT_PUBLIC_GIT_BRANCH;
+export const GIT_COMMIT_MESSAGE = process.env.NEXT_PUBLIC_GIT_COMMIT_MESSAGE;
+export const GIT_COMMIT_SHA = process.env.NEXT_PUBLIC_GIT_COMMIT_SHA;
+export const GIT_COMMIT_SHA_SHORT = GIT_COMMIT_SHA?.slice(0, 7);
+export const IS_GIT_PROVIDER_GITHUB = true;
+export const GIT_COMMIT_URL = GIT_COMMIT_SHA
+  ? `https://github.com/Eric-ZhehanZ/nanophoto/commit/${GIT_COMMIT_SHA}` : undefined;
+export const IS_PRODUCTION = process.env.NODE_ENV === 'production';
+export const IS_PREVIEW = process.env.NEXT_PUBLIC_DEPLOYMENT_ENV === 'preview';
 export const IS_DEVELOPMENT = process.env.NODE_ENV === 'development';
-export const IS_PREVIEW = VERCEL_ENV === 'preview';
 export const IS_BUILDING = process.env.NEXT_PHASE === 'phase-production-build';
-// VERCEL_ENV is only ever set by Vercel's platform (or `vercel env pull`),
-// so its presence is a reliable "are we actually running on Vercel" signal.
-export const IS_VERCEL_DEPLOYMENT = Boolean(VERCEL_ENV);
 
-export const VERCEL_BYPASS_KEY = 'x-vercel-protection-bypass';
-export const VERCEL_BYPASS_SECRET = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
-
-// DOMAIN
-
-// User-facing domain, potential site title
-const SITE_DOMAIN =
-  process.env.NEXT_PUBLIC_DOMAIN ||
-  // Legacy environment variable
-  process.env.NEXT_PUBLIC_SITE_DOMAIN ||
-  VERCEL_PRODUCTION_URL ||
-  VERCEL_PROJECT_URL ||
-  VERCEL_DEPLOYMENT_URL;
+const SITE_DOMAIN = process.env.NEXT_PUBLIC_DOMAIN || process.env.NEXT_PUBLIC_SITE_DOMAIN || 'photos.zhehanz.com';
 const SITE_DOMAIN_SHARE = process.env.NEXT_PUBLIC_DOMAIN_SHARE;
-
-// Used primarily for absolute references such as OG images
-export const BASE_URL =
-  makeUrlAbsolute((
-    process.env.NODE_ENV === 'production' &&
-    VERCEL_ENV !== 'preview'
-  ) ? SITE_DOMAIN
-    : VERCEL_ENV === 'preview'
-      ? VERCEL_BRANCH_URL || VERCEL_DEPLOYMENT_URL
-      : 'http://localhost:3000')?.toLocaleLowerCase();
-export const BASE_URL_SHARE =
-  makeUrlAbsolute(SITE_DOMAIN_SHARE)?.toLocaleLowerCase();
-
-export const getBaseUrl = (share?: boolean) =>
-  (share && BASE_URL_SHARE) ? BASE_URL_SHARE : BASE_URL;
-
+export const BASE_URL = makeUrlAbsolute(IS_DEVELOPMENT ? 'http://localhost:3000' : SITE_DOMAIN);
+export const BASE_URL_SHARE = makeUrlAbsolute(SITE_DOMAIN_SHARE);
+export const getBaseUrl = (share?: boolean) => (share && BASE_URL_SHARE) ? BASE_URL_SHARE : BASE_URL;
 const SITE_DOMAIN_SHORT = shortenUrl(SITE_DOMAIN);
 
 // SITE META
@@ -164,7 +114,7 @@ export const LIBRARY_DESCRIPTION_DEFAULT =
 
 // STORAGE: DATABASE
 export const HAS_DATABASE =
-  Boolean(process.env.POSTGRES_URL);
+  Boolean(process.env.DATABASE_URL || process.env.POSTGRES_URL);
 export const POSTGRES_SSL_ENABLED =
   process.env.DISABLE_POSTGRES_SSL === '1' ? false : true;
 
@@ -183,10 +133,6 @@ export const REDIS_TOKEN = (
 );
 export const HAS_REDIS_STORAGE =
   Boolean(REDIS_URL && REDIS_TOKEN);
-
-// STORAGE: VERCEL BLOB
-export const HAS_VERCEL_BLOB_STORAGE =
-  Boolean(process.env.BLOB_READ_WRITE_TOKEN);
 
 // STORAGE: Cloudflare R2
 // Includes separate check for client-side usage, i.e., url construction
@@ -220,7 +166,6 @@ export const HAS_MINIO_STORAGE =
   Boolean(process.env.MINIO_SECRET_ACCESS_KEY);
 
 export const HAS_MULTIPLE_STORAGE_PROVIDERS = [
-  HAS_VERCEL_BLOB_STORAGE,
   HAS_CLOUDFLARE_R2_STORAGE,
   HAS_AWS_S3_STORAGE,
   HAS_MINIO_STORAGE,
@@ -236,7 +181,7 @@ export const CURRENT_STORAGE: StorageType =
         ? 'cloudflare-r2'
         : HAS_AWS_S3_STORAGE_CLIENT
           ? 'aws-s3'
-          : 'vercel-blob'
+          : 'cloudflare-r2'
   );
 
 // PERFORMANCE
@@ -274,36 +219,15 @@ export const BLUR_ENABLED =
 
 // AI
 
-// AI text generation supports two providers, selected purely by which
-// switch var is set (no separate provider-selection var):
-//   OPENAI_SECRET_KEY set     -> direct OpenAI (explicit opt-in; wins if both)
-//   else AI_GATEWAY_MODEL set -> Vercel AI Gateway
-//   else                      -> off (a fresh deploy never calls an LLM)
-// Both switch vars are trimmed so a blank/whitespace value can't accidentally
-// win precedence or (for the gateway) construct an invalid model.
-export const OPENAI_SECRET_KEY =
-  process.env.OPENAI_SECRET_KEY?.trim() || undefined;
+// Direct OpenAI or any compatible endpoint; no hosting-provider gateway.
+export const OPENAI_SECRET_KEY = process.env.OPENAI_SECRET_KEY?.trim() || undefined;
 export const OPENAI_MODEL = process.env.OPENAI_MODEL;
 export const OPENAI_BASE_URL = process.env.OPENAI_BASE_URL;
-// Vercel AI Gateway: routes through https://vercel.com/docs/ai-gateway.
-// Model strings use the 'creator/model-name' format, e.g. 'openai/gpt-5.2'.
-// AI_GATEWAY_API_KEY is only required outside Vercel-hosted deployments —
-// Vercel authenticates automatically via OIDC when this app is deployed there.
-export const AI_GATEWAY_API_KEY = process.env.AI_GATEWAY_API_KEY;
-export const AI_GATEWAY_MODEL =
-  process.env.AI_GATEWAY_MODEL?.trim() || undefined;
-
-type AiContentGenerationProvider = 'openai' | 'gateway' | undefined;
-
-// Direct OpenAI is the explicit override: setting a secret key is a
-// deliberate act, so it wins over an ambient Gateway model. Gateway is the
-// recommended default when no OpenAI key is present.
-export const AI_CONTENT_GENERATION_PROVIDER: AiContentGenerationProvider =
-  OPENAI_SECRET_KEY
-    ? 'openai'
-    : AI_GATEWAY_MODEL
-      ? 'gateway'
-      : undefined;
+// Compatibility fields for the upstream configuration screen.
+export const AI_GATEWAY_API_KEY = undefined;
+export const AI_GATEWAY_MODEL = undefined;
+export const AI_CONTENT_GENERATION_PROVIDER: 'openai' | 'gateway' | undefined =
+  OPENAI_SECRET_KEY ? 'openai' : undefined;
 export const AI_CONTENT_GENERATION_ENABLED =
   Boolean(AI_CONTENT_GENERATION_PROVIDER);
 export const AI_TEXT_AUTO_GENERATED_FIELDS = parseAiAutoGeneratedFieldsString(
@@ -469,12 +393,10 @@ export const APP_CONFIGURATION = {
   hasDatabase: HAS_DATABASE,
   isPostgresSslEnabled: POSTGRES_SSL_ENABLED,
   hasRedisStorage: HAS_REDIS_STORAGE,
-  hasVercelBlobStorage: HAS_VERCEL_BLOB_STORAGE,
   hasCloudflareR2Storage: HAS_CLOUDFLARE_R2_STORAGE,
   hasAwsS3Storage: HAS_AWS_S3_STORAGE,
   hasMinioStorage: HAS_MINIO_STORAGE,
   hasStorageProvider: (
-    HAS_VERCEL_BLOB_STORAGE ||
     HAS_CLOUDFLARE_R2_STORAGE ||
     HAS_AWS_S3_STORAGE ||
     HAS_MINIO_STORAGE
@@ -518,7 +440,6 @@ export const APP_CONFIGURATION = {
   imageQuality: IMAGE_QUALITY,
   isBlurEnabled: BLUR_ENABLED,
   // AI
-  isVercelDeployment: IS_VERCEL_DEPLOYMENT,
   hasOpenaiSecretKey: Boolean(OPENAI_SECRET_KEY),
   hasOpenaiModel: Boolean(OPENAI_MODEL),
   hasOpenaiBaseUrl: Boolean(OPENAI_BASE_URL),
@@ -607,12 +528,12 @@ export const APP_CONFIGURATION = {
   // Misc
   nextVersion: dependencies.next,
   reactVersion: dependencies.react,
-  nodeVersion: (process.version || '').match(/[0-9.]+$/)?.[0],
+  nodeVersion: 'Cloudflare Workers',
   baseUrl: BASE_URL,
   baseUrlShare: BASE_URL_SHARE,
-  commitSha: VERCEL_GIT_COMMIT_SHA_SHORT,
-  commitMessage: VERCEL_GIT_COMMIT_MESSAGE,
-  commitUrl: VERCEL_GIT_COMMIT_URL,
+  commitSha: GIT_COMMIT_SHA_SHORT,
+  commitMessage: GIT_COMMIT_MESSAGE,
+  commitUrl: GIT_COMMIT_URL,
 };
 
 const ALL_DEPRECATED_ENV_VARS = [{

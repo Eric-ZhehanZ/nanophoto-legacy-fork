@@ -10,7 +10,8 @@ import {
   Oklch,
   PhotoColorData,
 } from './client';
-import sharp from 'sharp';
+import jpeg from 'jpeg-js';
+import { transformImage } from '@/platforms/images';
 import { extractColors } from 'extract-colors';
 import { getImageBase64FromUrl } from '../server';
 import { generateOpenAiImageQuery } from '@/platforms/openai';
@@ -37,14 +38,12 @@ const getImageDataFromUrl = async (_url: string) => {
   const url = getOptimizedPhotoUrlForManipulation(_url, IS_PREVIEW);
   const imageBuffer = await fetch(decodeURIComponent(url))
     .then(res => res.arrayBuffer());
-  const image = sharp(imageBuffer);
-  const { width, height } = await image.metadata();
-  const buffer = await image.ensureAlpha().raw().toBuffer();
-  return {
-    data: new Uint8ClampedArray(buffer.buffer),
-    width,
-    height,
-  };
+  // Decode a bounded thumbnail, not a full-resolution original, in workerd.
+  const thumbnail = await transformImage(imageBuffer, { width: 200 });
+  const { width, height, data } = jpeg.decode(thumbnail, {
+    useTArray: true, maxResolutionInMP: 4, maxMemoryUsageInMB: 32,
+  });
+  return { data: new Uint8ClampedArray(data), width, height };
 };
 
 // algorithm library: fast-average-color
