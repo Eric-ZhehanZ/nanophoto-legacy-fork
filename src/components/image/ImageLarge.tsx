@@ -10,6 +10,7 @@ export default function ImageLarge(props: CustomImageProps) {
   } = props;
   return (
     <ImageWithFallback {...{
+      sizes: '(max-width: 767px) calc(100vw - 24px), (max-width: 1023px) 73vw, (max-width: 1279px) 72vw, 956px',
       ...rest,
       blurCompatibilityLevel: blurCompatibilityMode ? 'high' : 'none',
       width: IMAGE_WIDTH_LARGE,

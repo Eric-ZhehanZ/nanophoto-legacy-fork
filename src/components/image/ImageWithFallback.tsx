@@ -1,6 +1,8 @@
 'use client';
 
 /* eslint-disable jsx-a11y/alt-text */
+import ImageViewport from './ImageViewport';
+import cloudflareImageLoader from '@/platforms/cloudflare-image-loader';
 import { BLUR_ENABLED } from '@/app/config';
 import { useAppState } from '@/app/AppState';
 import { clsx}  from 'clsx/lite';
@@ -27,7 +29,8 @@ function ImageWithFallbackInner({
 
   const [isLoading, setIsLoading] = useState(true);
   const [didError, setDidError] = useState(false);
-  const [useOriginal, setUseOriginal] = useState(false);
+  const [useRecovery, setUseRecovery] = useState(false);
+  const [showPlaceholder, setShowPlaceholder] = useState(true);
   const [fadeFallbackTransition, setFadeFallbackTransition] =
     useState(!hasLoadedWithAnimations);
 
@@ -36,13 +39,13 @@ function ImageWithFallbackInner({
     setDidError(false);
   }, []);
   const onError = useCallback(() => {
-    if (!useOriginal && !props.unoptimized) {
-      // A resizing outage must not leave a permanent blurred placeholder.
-      setUseOriginal(true);
+    if (!useRecovery && !props.unoptimized) {
+      // Retry a bounded JPEG, never a potentially enormous camera original.
+      setUseRecovery(true);
     } else {
       setDidError(true);
     }
-  }, [useOriginal, props.unoptimized]);
+  }, [useRecovery, props.unoptimized]);
 
   useEffect(() => {
     if (
@@ -52,6 +55,12 @@ function ImageWithFallbackInner({
       setFadeFallbackTransition(true);
     }
   }, []);
+
+  useEffect(() => {
+    if (isLoading || didError || shouldDebugImageFallbacks) return;
+    const timer = setTimeout(() => setShowPlaceholder(false), 320);
+    return () => clearTimeout(timer);
+  }, [isLoading, didError, shouldDebugImageFallbacks]);
 
   const getBlurClass = () => {
     switch (blurCompatibilityLevel) {
@@ -73,12 +82,14 @@ function ImageWithFallbackInner({
       <Image ref={refProp ?? ref} {...{
         ...props,
         priority,
-        unoptimized: useOriginal || props.unoptimized,
+        loader: useRecovery ? options => cloudflareImageLoader({
+          ...options, width: Math.min(options.width, 1280), quality: 70,
+        }).replace('format=auto', 'format=jpeg') : props.loader,
         className: classNameImage,
         onLoad,
         onError,
       }} />
-      <div
+      {(showPlaceholder || shouldDebugImageFallbacks) && <div
         className={clsx(
           '@container',
           'absolute inset-0 pointer-events-none',
@@ -104,7 +115,7 @@ function ImageWithFallbackInner({
             'w-full h-full',
             'bg-gray-100/50 dark:bg-gray-900/50',
           )} />}
-      </div>
+      </div>}
     </div>
   );
 }
@@ -113,5 +124,19 @@ export default function ImageWithFallback(
   props: Parameters<typeof ImageWithFallbackInner>[0],
 ) {
   const key = typeof props.src === 'string' ? props.src : JSON.stringify(props.src);
-  return <ImageWithFallbackInner key={key} {...props} />;
+  const width = Number(props.width) || 1;
+  const height = Number(props.height) || 1;
+  const empty = `data:image/svg+xml,${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"/>`,
+  )}`;
+  return <ImageViewport key={key}
+    eager={Boolean(props.priority || props.loading === 'eager')}
+    placeholder={<div className={clsx('flex relative', props.className)}>
+      <img src={empty} alt="" aria-hidden width={props.width} height={props.height}
+        className={props.classNameImage ?? 'object-cover h-full'}
+        style={props.fill ? { position: 'absolute', inset: 0, width: '100%', height: '100%' } : props.style}
+      />
+    </div>}>
+    <ImageWithFallbackInner {...props} />
+  </ImageViewport>;
 }
