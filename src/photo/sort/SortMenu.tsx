@@ -1,3 +1,4 @@
+import { useUiText } from '@/i18n/UiText';
 import SwitcherItemMenu from '@/components/switcher/SwitcherItemMenu';
 import { getSortStateFromPath } from './path';
 import { getSortMenuItems } from './menu';
@@ -13,6 +14,7 @@ export default function SortMenu({
   setIsOpen?: (isOpen: boolean) => void
 } & ReturnType<typeof getSortStateFromPath>) {
   const appText = useAppText();
+  const uiText = useUiText();
 
   const { itemsSortOrder, itemsSortType } =
     getSortMenuItems(sortConfig, appText);
@@ -32,7 +34,7 @@ export default function SortMenu({
       align="start"
       side="top"
       sideOffset={12}
-      ariaLabel="Sort Menu"
+      ariaLabel={uiText('Sort Menu')}
     />
   );
 }

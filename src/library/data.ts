@@ -238,6 +238,7 @@ export const getLibraryFolderRows = async (
           key: query.key,
           caption: row.key === 'tags'
             ? (() => {
+              if (query.key === TAG_FAVS) return appText.category.taggedFavs;
               const tag = categories.tags.find(t => t.tag === query.key);
               return (language === 'zh' ? tag?.nameZh : tag?.nameEn) || query.caption;
             })() : query.caption,

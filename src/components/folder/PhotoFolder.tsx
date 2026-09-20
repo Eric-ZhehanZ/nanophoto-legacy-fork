@@ -1,4 +1,5 @@
 'use client';
+import { useAppLanguage } from '@/i18n/state/client';
 import { useUiText } from '@/i18n/UiText';
 import usePhotoLocalization from '@/photo/usePhotoLocalization';
 
@@ -263,6 +264,7 @@ export default function PhotoFolder({
   maxPhotos?: number
 }) {
   const uiText = useUiText();
+  const language = useAppLanguage();
   const {
     photosToShow,
     gridClass,
@@ -518,8 +520,8 @@ export default function PhotoFolder({
               'pointer-events-none shrink-0',
             )}
             aria-label={isLoading
-              ? 'Loading'
-              : formatCountDescriptive(count)}
+              ? uiText('Loading')
+              : language === 'zh' ? `共 ${count} 张照片` : formatCountDescriptive(count)}
           >
             <span
               className={clsx(

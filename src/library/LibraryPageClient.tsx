@@ -13,12 +13,13 @@ import PhotoRecipe from '@/recipe/PhotoRecipe';
 import PhotoTag from '@/tag/PhotoTag';
 import clsx from 'clsx/lite';
 import { formatDistanceToNowStrict } from 'date-fns';
+import { enUS, zhCN } from 'date-fns/locale';
 import AdminLibraryMenu from './AdminLibraryMenu';
 import { ReactNode, useMemo } from 'react';
 import { Camera } from '@/camera';
 import { Lens } from '@/lens';
 import { Album } from '@/album';
-import { useAppText } from '@/i18n/state/client';
+import { useAppLanguage, useAppText } from '@/i18n/state/client';
 import PhotoAvatar from '@/photo/PhotoAvatar';
 import Link from 'next/link';
 import { PATH_ADMIN_LIBRARY_EDIT } from '@/app/path';
@@ -67,6 +68,7 @@ export default function LibraryPageClient({
   } = useAppState();
 
   const appText = useAppText();
+  const language = useAppLanguage();
 
   const renderItem = (label: string, content?: ReactNode) => (
     <div
@@ -189,7 +191,7 @@ export default function LibraryPageClient({
                 </div>
                 {lastUpdated && <div className={clsx('text-dim')}>
                   {appText.library.updated(
-                    formatDistanceToNowStrict(lastUpdated),
+                    formatDistanceToNowStrict(lastUpdated, { locale: language === 'zh' ? zhCN : enUS }),
                   )}
                 </div>}
               </div>
