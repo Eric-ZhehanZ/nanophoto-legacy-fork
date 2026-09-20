@@ -12,30 +12,18 @@ export default function useStickyNav(
 
   const hasScrolledPastNav = scrollY > navHeight;
 
-  const isNavSticky = isEnabled && (
-    hasScrolledPastNav ||
-    scrollDirection === 'up'
-  );
-
-  const shouldHideStickyNav =
-    isNavSticky &&
+  const isNavSticky = isEnabled;
+  const shouldHideStickyNav = isEnabled && hasScrolledPastNav &&
     scrollDirection === 'down';
-
-  const shouldAnimateStickyNav =
-    isNavSticky && (
-      scrollY > navHeight * 2 ||
-      scrollDirection === 'up'
-    );
 
   const classNames = useMemo(() => ({
     classNameStickyContainer: clsx(
       isNavSticky && 'sticky top-0 z-10 pointer-events-none',
     ),
     classNameStickyNav: clsx(
-      shouldHideStickyNav ? 'translate-y-[-100%]' : 'translate-y-0',
-      shouldAnimateStickyNav && 'transition-transform duration-200',
+      shouldHideStickyNav && 'photo-nav-hidden',
     ),
-  }), [isNavSticky, shouldAnimateStickyNav, shouldHideStickyNav]);
+  }), [isNavSticky, shouldHideStickyNav]);
 
   return {
     ...classNames,
