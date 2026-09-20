@@ -11,22 +11,26 @@ export const getAlbumFromSlugCached =
   unstable_cache(
     getAlbumFromSlug,
     [KEY_PHOTOS, KEY_ALBUMS],
+    { tags: [KEY_PHOTOS, KEY_ALBUMS] },
   );
 
 export const getAlbumTitlesForPhotoCached =
   unstable_cache(
     getAlbumTitlesForPhoto,
     [KEY_PHOTOS, KEY_ALBUMS],
+    { tags: [KEY_PHOTOS, KEY_ALBUMS] },
   );
 
 export const getAlbumsWithMetaCached =
   unstable_cache(
     getAlbumsWithMeta,
     [KEY_PHOTOS, KEY_ALBUMS],
+    { tags: [KEY_PHOTOS, KEY_ALBUMS] },
   );
 
 export const getTagsForAlbumCached =
   unstable_cache(
     getTagsForAlbum,
     [KEY_PHOTOS, KEY_ALBUMS],
+    { tags: [KEY_PHOTOS, KEY_ALBUMS] },
   );

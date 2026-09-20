@@ -6,4 +6,5 @@ export const getLibraryCached =
   unstable_cache(
     getLibrary,
     [KEY_PHOTOS, KEY_LIBRARY],
+    { tags: [KEY_PHOTOS, KEY_LIBRARY] },
   );

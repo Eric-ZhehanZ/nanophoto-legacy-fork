@@ -5,9 +5,11 @@ import { KEY_PHOTOS } from '@/cache';
 export const getDataForCategoriesCached = unstable_cache(
   getDataForCategories,
   [KEY_PHOTOS],
+  { tags: [KEY_PHOTOS] },
 );
 
 export const getCountsForCategoriesCached = unstable_cache(
   getCountsForCategories,
   [KEY_PHOTOS],
+  { tags: [KEY_PHOTOS] },
 );

@@ -118,6 +118,8 @@ export const PATHS_ADMIN = [
 ];
 
 export const PATHS_TO_CACHE = [
+  '/feed.json',
+  '/rss.xml',
   PATH_ROOT,
   PATH_GRID,
   PATH_FULL,

@@ -3,6 +3,7 @@
 import { clsx } from 'clsx/lite';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import AppGrid from '../components/AppGrid';
 import AppToolbar from '@/app/AppToolbar';
 import {
@@ -11,24 +12,17 @@ import {
   isPathSignIn,
 } from '@/app/path';
 import AnimateItems from '../components/AnimateItems';
-import {
-  NAV_CAPTION,
-} from './config';
 import { useRef } from 'react';
 import useStickyNav from './useStickyNav';
 import { useAppState } from '@/app/AppState';
 
-const NAV_HEIGHT_CLASS = NAV_CAPTION
-  ? 'min-h-[4rem] sm:min-h-[5rem]'
-  : 'min-h-[4rem]';
+const NAV_HEIGHT_CLASS = 'min-h-[4rem]';
 
 export default function NavClient({
   navTitle,
-  navCaption,
   isInEmptyState,
 }: {
   navTitle: string
-  navCaption?: string
   isInEmptyState: boolean
 }) {
   const ref = useRef<HTMLElement>(null);
@@ -45,14 +39,6 @@ export default function NavClient({
     classNameStickyNav,
     isNavVisible,
   } = useStickyNav(ref, !isPathAdmin(pathname));
-
-  const renderLink = (
-    text: string,
-    linkOrAction: string | (() => void),
-  ) =>
-    typeof linkOrAction === 'string'
-      ? <Link href={linkOrAction}>{text}</Link>
-      : <button onClick={linkOrAction} type="button">{text}</button>;
 
   return (
     <AppGrid
@@ -78,20 +64,19 @@ export default function NavClient({
                 animate={hasLoadedWithAnimations && isNavVisible}
                 hideSortControl={isInEmptyState}
               />
-              <div className={clsx(
-                'grow text-right min-w-0',
-                'translate-y-[-1px]',
-              )}>
-                <div className="truncate overflow-hidden select-none">
-                  {renderLink(navTitle, PATH_ROOT)}
-                </div>
-                {navCaption &&
-                  <div className={clsx(
-                    'hidden sm:block truncate overflow-hidden',
-                    'leading-tight text-dim',
-                  )}>
-                    {navCaption}
-                  </div>}
+              <div className="grow flex justify-end min-w-0">
+                <Link href={PATH_ROOT} aria-label={navTitle} className="group">
+                  <span className="block relative w-16 h-12">
+                    <Image src="/logo-light.svg" alt="ZhehanZ"
+                      width={64} height={48} unoptimized priority
+                      className="absolute inset-0 size-full opacity-50 group-hover:opacity-100 block dark:hidden"
+                    />
+                    <Image src="/logo-dark.svg" alt="ZhehanZ"
+                      width={64} height={48} unoptimized priority
+                      className="absolute inset-0 size-full opacity-75 group-hover:opacity-100 hidden dark:block"
+                    />
+                  </span>
+                </Link>
               </div>
             </nav>]
             : []}
