@@ -1,3 +1,4 @@
+import UiText from '@/i18n/UiText';
 import { clsx } from 'clsx/lite';
 import Badge from './Badge';
 
@@ -14,8 +15,6 @@ export default function ExperimentalBadge({
         'bg-pink-100 dark:bg-pink-800/35',
         'uppercase',
         className,
-      )}>
-      Experimental
-    </Badge>
+      )}> <UiText text="Experimental" /> </Badge>
   );
 }

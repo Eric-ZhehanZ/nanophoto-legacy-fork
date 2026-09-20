@@ -1,4 +1,5 @@
 'use client';
+import { useUiText } from '@/i18n/UiText';
 
 import { pathForRecipe } from '@/app/path';
 import EntityLink, {
@@ -21,12 +22,13 @@ export default function PhotoRecipe({
   recipe: string
 } & Partial<ComponentProps<typeof PhotoRecipeOverlayButton>>
   & EntityLinkExternalProps) {
+  const uiText = useUiText();
   const { getRecipeCount } = useCategoryCounts();
   return (
     <EntityLink
       {...props}
       ref={ref}
-      title="Recipe"
+      title={uiText('Recipe')}
       label={formatRecipe(recipe)}
       path={pathForRecipe(recipe)}
       hoverQueryOptions={{ recipe }}

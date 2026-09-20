@@ -1,4 +1,6 @@
 'use client';
+import { useUiText } from '@/i18n/UiText';
+import UiText from '@/i18n/UiText';
 
 import { PATH_LIBRARY } from '@/app/path';
 import LinkWithStatus from '@/components/LinkWithStatus';
@@ -27,6 +29,7 @@ export default function AdminLibraryEditPage({
   photosFavs: Photo[]
   shouldResizeImages?: boolean
 }) {
+  const uiText = useUiText();
   const appText = useAppText();
 
   const [libraryForm, setLibraryForm] =
@@ -40,7 +43,7 @@ export default function AdminLibraryEditPage({
   return (
     <AdminChildPage
       backPath={PATH_LIBRARY}
-      backLabel="Library"
+      backLabel={uiText('Library')}
       breadcrumb="Edit Library Page"
     >
       <form
@@ -50,7 +53,7 @@ export default function AdminLibraryEditPage({
         <div className="space-y-4">
           <FieldsetPhotoChooser
             id="photoIdAvatar"
-            label="Avatar"
+            label={uiText('Avatar')}
             value={libraryForm?.photoIdAvatar ?? photoAvatar?.id ?? ''}
             onChange={photoIdAvatar => setLibraryForm(form =>
               ({ ...form, photoIdAvatar }))}
@@ -60,21 +63,21 @@ export default function AdminLibraryEditPage({
             photosFavs={photosFavs}
           />
           <FieldsetWithStatus
-            label="Title"
+            label={uiText('Title')}
             value={libraryForm?.title ?? ''}
             placeholder={placeholderTitle}
             onChange={title => setLibraryForm(form =>
               ({ ...form, title }))}
           />
           <FieldsetWithStatus
-            label="Subhead"
+            label={uiText('Subhead')}
             value={libraryForm?.subhead ?? ''}
             placeholder={placeholderSubhead}
             onChange={subhead => setLibraryForm(form =>
               ({ ...form, subhead }))}
           />
           <FieldsetWithStatus
-            label="Description"
+            label={uiText('Description')}
             type="textarea"
             value={libraryForm?.description ?? ''}
             placeholder={LIBRARY_DESCRIPTION_DEFAULT}
@@ -86,15 +89,11 @@ export default function AdminLibraryEditPage({
           <LinkWithStatus
             href={PATH_LIBRARY}
             className="button"
-          >
-            Cancel
-          </LinkWithStatus>
+          > <UiText text="Cancel" /> </LinkWithStatus>
           <SubmitButtonWithStatus
             hideText="never"
             primary
-          >
-            Update
-          </SubmitButtonWithStatus>
+          > <UiText text="Update" /> </SubmitButtonWithStatus>
         </div>
       </form>
     </AdminChildPage>

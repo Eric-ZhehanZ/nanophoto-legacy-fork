@@ -1,3 +1,4 @@
+import UiText from '@/i18n/UiText';
 import { ReactNode, useRef } from 'react';
 import { clsx } from 'clsx/lite';
 import ExperimentalBadge from './ExperimentalBadge';
@@ -50,12 +51,10 @@ export default function ChecklistGroup({
       <span className="w-8 sm:w-9 shrink-0 translate-y-[-1px]">{icon}</span>
       <span className="inline-flex flex-wrap items-center gap-y-1 gap-x-2.5">
         <ResponsiveText shortText={titleShort}>
-          {title}
+          {<UiText>{title}</UiText>}
         </ResponsiveText>
         {optional &&
-          <Badge type="small">
-            Optional
-          </Badge>}
+          <Badge type="small"> <UiText text="Optional" /> </Badge>}
         {experimental &&
           <ExperimentalBadge />}
       </span>

@@ -1,4 +1,5 @@
 'use client';
+import { useUiText } from '@/i18n/UiText';
 
 import { Photo, titleForPhoto } from '@/photo';
 import AdminTable from './AdminTable';
@@ -54,6 +55,7 @@ export default function AdminPhotosTable({
   updateMode?: boolean
   debugColorData?: boolean
 }) {
+  const uiText = useUiText();
   const { invalidateSwr } = useAppState();
 
   const opacityForPhotoId = (photoId: string) =>
@@ -84,7 +86,7 @@ export default function AdminPhotosTable({
                 <span className="inline-flex shrink-0">
                   <ColorDot
                     color={getKeyColorFromPhoto(photo)}
-                    title="Key Color"
+                    title={uiText('Key Color')}
                     size="small"
                     className="mr-1"
                   />

@@ -1,4 +1,5 @@
 'use client';
+import UiText from '@/i18n/UiText';
 
 import LinkWithIconLoader from '@/components/LinkWithIconLoader';
 import Note from '@/components/Note';
@@ -108,10 +109,7 @@ export default function AdminNavClient({
             />
           </div>
           {shouldShowBanner &&
-            <Note icon={<FaRegClock className="shrink-0" />}>
-              Photo updates detected—they may take several minutes to show up
-              for visitors
-            </Note>}
+            <Note icon={<FaRegClock className="shrink-0" />}> <UiText text="Photo updates detected—they may take several minutes to show up for visitors" /> </Note>}
           {isPathAdminInfo(pathname) &&
             <AdminInfoNav {...{ includeInsights }} />}
         </div>

@@ -1,4 +1,5 @@
 'use client';
+import UiText from '@/i18n/UiText';
 
 import { clsx } from 'clsx/lite';
 import AppGrid from '@/components/AppGrid';
@@ -78,9 +79,9 @@ export default function AdminPhotosClient({
                 )}
                 className={clsx(
                   'text-blue-600 dark:text-blue-400',
-                  'border border-blue-200 dark:border-blue-800/60',
-                  'active:bg-blue-50 dark:active:bg-blue-950/50',
-                  'disabled:bg-blue-50 dark:disabled:bg-blue-950/50',
+                  'border border-stone-200 dark:border-stone-800/60',
+                  'active:bg-stone-50 dark:active:bg-stone-950/50',
+                  'disabled:bg-stone-50 dark:disabled:bg-stone-950/50',
                   isUploading && 'hidden md:inline-flex',
                 )}
                 spinnerColor="text"
@@ -102,8 +103,7 @@ export default function AdminPhotosClient({
               'border-gray-200 dark:border-gray-700',
               'space-y-4',
             )}>
-              <div className="font-bold">
-                Photo Blobs ({blobPhotoUrls.length})
+              <div className="font-bold"> <UiText text="Photo Blobs (" /> {blobPhotoUrls.length})
               </div>
               <AdminUploadsTable urlAddStatuses={blobPhotoUrls} />
             </div>}

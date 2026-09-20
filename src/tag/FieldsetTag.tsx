@@ -1,4 +1,5 @@
 'use client';
+import { useUiText } from '@/i18n/UiText';
 
 import FieldsetWithStatus from '@/components/FieldsetWithStatus';
 import { useAppText } from '@/i18n/state/client';
@@ -15,6 +16,7 @@ export default function FieldsetTag(props: {
   ComponentProps<typeof FieldsetWithStatus>,
   'tagOptions'
 >>) {
+  const uiText = useUiText();
   const {
     tags,
     tagOptions,
@@ -38,12 +40,12 @@ export default function FieldsetTag(props: {
       return () => clearTimeout(timeout);
     }
   }, [openOnLoad]);
-  
+
   return (
     <div ref={ref}>
       <FieldsetWithStatus
         {...rest}
-        label="Tags"
+        label={uiText('Tags')}
         value={tags}
         tagOptions={convertTagsForForm(tagOptions, appText)}
         onChange={tags => {

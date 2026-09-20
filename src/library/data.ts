@@ -1,3 +1,4 @@
+import { getRequestLanguage } from '@/i18n/request';
 import {
   CATEGORY_VISIBILITY,
   HIDE_TAGS_WITH_ONE_PHOTO,
@@ -194,6 +195,7 @@ export const getLibraryFolderRows = async (
   categories: PhotoSetCategories,
   appText: AppTextState,
 ): Promise<LibrarySetFolderRow[]> => {
+  const language = await getRequestLanguage();
   const recentsQueries = getFolderQueriesForCategory(
     'recents',
     categories,
@@ -234,7 +236,11 @@ export const getLibraryFolderRows = async (
       folders: row.queries
         .map(query => ({
           key: query.key,
-          caption: query.caption,
+          caption: row.key === 'tags'
+            ? (() => {
+              const tag = categories.tags.find(t => t.tag === query.key);
+              return (language === 'zh' ? tag?.nameZh : tag?.nameEn) || query.caption;
+            })() : query.caption,
           path: query.path,
           count: query.count,
           // Folder previews do not need repeated embedded blur placeholders.

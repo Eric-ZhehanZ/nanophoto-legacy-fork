@@ -325,7 +325,7 @@ export default function AdminBatchEditPanelClient({
             'p-2 rounded-xl',
             'backdrop-blur-lg',
             'text-gray-900! dark:text-gray-100!',
-            'bg-gray-100/90! dark:bg-gray-900/70!',
+            'bg-stone-100/90! dark:bg-stone-900/90!',
             'outline outline-medium',
             'shadow-xl/5',
           )}

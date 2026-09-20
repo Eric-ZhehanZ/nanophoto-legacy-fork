@@ -1,3 +1,4 @@
+import UiText from '@/i18n/UiText';
 import { ReactNode } from 'react';
 import Link from 'next/link';
 import { FiArrowLeft } from 'react-icons/fi';
@@ -45,7 +46,7 @@ function AdminChildPage({
                   >
                     <FiArrowLeft size={16} />
                     <span className="hidden xs:inline-block">
-                      {backLabel || 'Back'}
+                      {<UiText>{backLabel || 'Back'}</UiText>}
                     </span>
                   </Link>}
                 {breadcrumb &&

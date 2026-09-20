@@ -1,3 +1,5 @@
+import { localizePhoto } from '@/photo/localize';
+import { getRequestLanguage } from '@/i18n/request';
 import {
   RELATED_GRID_PHOTOS_TO_SHOW,
   descriptionForPhoto,
@@ -51,9 +53,10 @@ export async function generateMetadata({
 
   if (!photo) { return {}; }
 
-  const title = titleForPhoto(photo);
-  const description = descriptionForPhoto(photo);
-  const descriptionHtml = descriptionForPhoto(photo, true);
+  const localized = localizePhoto(photo, await getRequestLanguage());
+  const title = titleForPhoto(localized);
+  const description = descriptionForPhoto(localized);
+  const descriptionHtml = descriptionForPhoto(localized, true);
   const images = absolutePathForPhotoImage(photo);
   const url = absolutePathForPhoto({ photo });
 

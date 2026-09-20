@@ -1,3 +1,4 @@
+import { useAppLanguage } from '@/i18n/state/client';
 import { AnnotatedTag } from '@/photo/form';
 import { convertStringToArray, parameterize } from '@/utility/string';
 import { clsx } from 'clsx/lite';
@@ -54,6 +55,7 @@ export default function TagInput({
   allowNewValues?: boolean
   shouldParameterize?: boolean
 }) {
+  const language = useAppLanguage();
   const behavesAsDropdown = limit === 1;
 
   const containerRef = useRef<HTMLInputElement>(null);
@@ -106,10 +108,10 @@ export default function TagInput({
       ? [{ value: `${CREATE_LABEL} "${inputTextFormatted}"` }]
       : []
     ).concat(options
-      .filter(({ value, label }) =>{
+      .filter(({ value, label, searchTerms }) =>{
         // Make value and key searchable
-        const key = `${value}-${label}`;
-        return !selectedOptions.includes(key) && (
+        const key = `${value}-${label}-${searchTerms || ''}`;
+        return !selectedOptions.includes(value) && (
           !inputTextFormatted ||
           (shouldParameterize
             ? key.includes(inputTextFormatted)
@@ -335,16 +337,17 @@ export default function TagInput({
         className="sr-only mb-3 text-dim"
       >
         {selectedOptions.length === 0
-          ? 'No tags selected'
-          : selectedOptions.join(', ') +
-            ` tag${selectedOptions.length !== 1 ? 's' : ''} selected`}
+          ? (language === 'zh' ? '尚未选择标签' : 'No tags selected')
+          : language === 'zh' ? `已选择标签：${selectedOptions.join('、')}`
+            : selectedOptions.join(', ') +
+              ` tag${selectedOptions.length !== 1 ? 's' : ''} selected`}
       </div>
       <div
         aria-controls={ARIA_ID_TAG_CONTROL}
         className={clsx(
           className,
           'w-full control px-2! py-2!',
-          '-outline-offset-2 outline-blue-600',
+          '-outline-offset-2 outline-stone-600',
           'group-focus-within:outline-2 ',
           'inline-flex flex-wrap items-center gap-2',
           readOnly && 'cursor-not-allowed',
@@ -358,7 +361,7 @@ export default function TagInput({
             <button
               key={option}
               type="button"
-              aria-label={`Remove tag "${option}"`}
+              aria-label={language === 'zh' ? `移除标签“${option}”` : `Remove tag "${option}"`}
               className={clsx(
                 'inline-flex items-center gap-2 min-w-0',
                 'text-main',

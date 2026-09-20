@@ -1,3 +1,4 @@
+import { canonicalizeTags } from '@/tag/catalog-server';
 /* eslint-disable quotes */
 import {
   sql,
@@ -82,7 +83,9 @@ export const createPhotosTable = () =>
   `;
 
 // Must provide id as 8-character nanoid
-export const insertPhoto = (photo: PhotoDbInsert) =>
+export const insertPhoto = async (photo: PhotoDbInsert) => {
+  photo = { ...photo, tags: await canonicalizeTags(photo.tags) };
+  return;
   safelyQuery(() => sql`
     INSERT INTO photos (
       id,
@@ -93,8 +96,11 @@ export const insertPhoto = (photo: PhotoDbInsert) =>
       aspect_ratio,
       blur_data,
       title,
+      title_zh,
       caption,
+      caption_zh,
       semantic_description,
+      semantic_description_zh,
       tags,
       make,
       model,
@@ -129,8 +135,11 @@ export const insertPhoto = (photo: PhotoDbInsert) =>
       ${photo.aspectRatio},
       ${photo.blurData},
       ${photo.title},
+      ${photo.titleZh},
       ${photo.caption},
+      ${photo.captionZh},
       ${photo.semanticDescription},
+      ${photo.semanticDescriptionZh},
       ${convertArrayToPostgresString(photo.tags)},
       ${photo.make},
       ${photo.model},
@@ -160,8 +169,11 @@ export const insertPhoto = (photo: PhotoDbInsert) =>
       ${photo.takenAtNaive}
     )
   `, 'insertPhoto');
+};
 
-export const updatePhoto = (photo: PhotoDbInsert) =>
+export const updatePhoto = async (photo: PhotoDbInsert) => {
+  photo = { ...photo, tags: await canonicalizeTags(photo.tags) };
+  return;
   safelyQuery(() => sql`
     UPDATE photos SET
       url=${photo.url},
@@ -171,8 +183,11 @@ export const updatePhoto = (photo: PhotoDbInsert) =>
       aspect_ratio=${photo.aspectRatio},
       blur_data=${photo.blurData},
       title=${photo.title},
+      title_zh=${photo.titleZh},
       caption=${photo.caption},
+      caption_zh=${photo.captionZh},
       semantic_description=${photo.semanticDescription},
+      semantic_description_zh=${photo.semanticDescriptionZh},
       tags=${convertArrayToPostgresString(photo.tags)},
       make=${photo.make},
       model=${photo.model},
@@ -203,6 +218,7 @@ export const updatePhoto = (photo: PhotoDbInsert) =>
       updated_at=${(new Date()).toISOString()}
     WHERE id=${photo.id}
   `, 'updatePhoto');
+};
 
 export const updatePhotoTitleCaption = (
   photoIds: string[],
@@ -233,9 +249,10 @@ export const updatePhotoTitleCaption = (
 
 export const deletePhotoTagGlobally = (tag: string) =>
   safelyQuery(() => sql`
-    UPDATE photos
-    SET tags=ARRAY_REMOVE(tags, ${tag})
-    WHERE ${tag}=ANY(tags)
+    WITH updated AS (
+      UPDATE photos SET tags=ARRAY_REMOVE(tags, ${tag})
+      WHERE ${tag}=ANY(tags) RETURNING id
+    ) DELETE FROM photo_tags WHERE tag=${tag}
   `, 'deletePhotoTagGlobally');
 
 export const renamePhotoTagGlobally = (tag: string, updatedTag: string) =>
@@ -263,9 +280,10 @@ export const setPhotoVisibilityForIds = (
     convertArrayToPostgresString(photoIds),
   ]), 'setPhotoVisibilityForIds');
 
-export const addTagsToPhotos = (tags: string[], photoIds: string[]) =>
-  safelyQuery(() => query(`
-    UPDATE photos 
+export const addTagsToPhotos = async (tags: string[], photoIds: string[]) => {
+  const canonicalTags = await canonicalizeTags(tags);
+  return safelyQuery(() => query(`
+    UPDATE photos
     SET tags = (
       SELECT array_agg(DISTINCT elem)
       FROM unnest(
@@ -274,9 +292,10 @@ export const addTagsToPhotos = (tags: string[], photoIds: string[]) =>
     )
     WHERE id = ANY($2)
   `, [
-    convertArrayToPostgresString(tags),
+    convertArrayToPostgresString(canonicalTags),
     convertArrayToPostgresString(photoIds),
   ]), 'addTagsToPhotos');
+};
 
 export const deletePhotoRecipeGlobally = (recipe: string) =>
   safelyQuery(() => sql`
@@ -322,7 +341,7 @@ export const getUniqueCameras = async () =>
     }) => ({
       cameraKey: createCameraKey({ make, model }),
       camera: { make, model },
-      count: parseInt(count, 10), 
+      count: parseInt(count, 10),
       lastModified: last_modified as Date,
     })))
   , 'getUniqueCameras');
@@ -342,26 +361,24 @@ export const getUniqueLenses = async () =>
       .map(({ lens_make: make, lens_model: model, count, last_modified }) => ({
         lensKey: createLensKey({ make, model }),
         lens: { make, model },
-        count: parseInt(count, 10), 
+        count: parseInt(count, 10),
         lastModified: last_modified as Date,
       })))
   , 'getUniqueLenses');
 
 export const getUniqueTags = async (includeHidden?: boolean) =>
   safelyQuery(() => query(`
-    SELECT DISTINCT unnest(tags) as tag,
-      COUNT(*),
-      MAX(updated_at) as last_modified
-    FROM photos
-    ${includeHidden ? '' : 'WHERE hidden IS NOT TRUE'}
-    GROUP BY tag
-    ORDER BY tag ASC
-  `).then(({ rows }): Tags => rows.map(({ tag, count, last_modified }) => ({
-    tag,
-    count: parseInt(count, 10),
-    lastModified: last_modified as Date,
-  })))
-  , 'getUniqueTags');
+    WITH used AS (
+      SELECT unnest(tags) AS tag, COUNT(*), MAX(updated_at) AS last_modified
+      FROM photos ${includeHidden ? '' : 'WHERE hidden IS NOT TRUE'}
+      GROUP BY tag
+    )
+    SELECT used.*, names.name_en, names.name_zh, names.aliases
+    FROM used LEFT JOIN photo_tags names USING(tag) ORDER BY tag
+  `).then(({ rows }): Tags => rows.map(row => ({
+    tag: row.tag, count: Number(row.count), lastModified: row.last_modified,
+    nameEn: row.name_en, nameZh: row.name_zh, aliases: row.aliases,
+  }))), 'getUniqueTags');
 
 export const getUniqueRecipes = async () =>
   safelyQuery(() => sql`
@@ -513,7 +530,7 @@ const _getPhotos = async (
     wheresValues,
     lastValuesIndex,
   } = getWheresFromOptions(options);
-  
+
   if (wheres) {
     sql.push(wheres);
     values.push(...wheresValues);
@@ -634,7 +651,7 @@ export const getPhotosNearId = async (
           indexNumber,
         };
       });
-  }, `getPhotosNearId: ${photoId}`);  
+  }, `getPhotosNearId: ${photoId}`);
 
 export const getPhotosMeta = (options: PhotoQueryOptions = {}) =>
   safelyQuery(async () => {

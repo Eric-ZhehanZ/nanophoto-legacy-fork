@@ -1,3 +1,4 @@
+import UiText from '@/i18n/UiText';
 import clsx from 'clsx/lite';
 import Link from 'next/link';
 import { ComponentProps } from 'react';
@@ -25,12 +26,10 @@ export default function AdminLink({
         )}>
           {children}
         </span>
-        {externalIcon && <span className="whitespace-nowrap">
-          &nbsp;
-          <FiExternalLink
-            size={14}
-            className="inline translate-y-[-1.5px]"
-          />
+        {externalIcon && <span className="whitespace-nowrap"> <UiText text="&nbsp;" /> <FiExternalLink
+          size={14}
+          className="inline translate-y-[-1.5px]"
+        />
         </span>}
       </Link>
     </>

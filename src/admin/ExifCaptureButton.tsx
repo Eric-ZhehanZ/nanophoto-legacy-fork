@@ -1,4 +1,5 @@
 'use client';
+import UiText from '@/i18n/UiText';
 
 import LoaderButton from '@/components/primitives/LoaderButton';
 import SubmitButtonWithStatus from '@/components/SubmitButtonWithStatus';
@@ -37,9 +38,7 @@ export default function ExifCaptureButton({
             'translate-y-[0.5px] translate-x-[0.5px]',
             'sm:translate-x-[-0.5px]',
           )} />}
-      >
-        EXIF
-      </LoaderButton>
+      > <UiText text="EXIF" /> </LoaderButton>
     </Tooltip>
   );
 }

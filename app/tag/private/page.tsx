@@ -1,3 +1,4 @@
+import UiText from '@/i18n/UiText';
 import Note from '@/components/Note';
 import { INFINITE_SCROLL_GRID_INITIAL } from '@/photo';
 import { getPhotosMetaCached, getPhotosNoStore } from '@/photo/cache';
@@ -18,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
   if (count === 0) { return {}; }
 
   const appText = await getAppText();
-  
+
   const title = titleForTag(TAG_PRIVATE, undefined, appText, count);
 
   const description = descriptionForTaggedPhotos(
@@ -62,9 +63,7 @@ export default async function PrivateTagPage() {
       tag={TAG_PRIVATE}
       header={<div className="space-y-6">
         <PrivateHeader {...{ photos, count, dateRange }} />
-        <Note>
-          Visible only to admins (uploads only secure via obscurity)
-        </Note>
+        <Note> <UiText text="Visible only to admins (uploads only secure via obscurity)" /> </Note>
       </div>}
     />
   );

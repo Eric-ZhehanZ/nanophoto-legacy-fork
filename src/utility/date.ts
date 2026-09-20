@@ -37,12 +37,14 @@ export const formatDate = ({
   timezone,
   hideTime,
   showPlaceholder,
+  language,
 }: {
   date: Date,
   length?: Length,
   timezone?: Timezone,
   hideTime?: boolean,
   showPlaceholder?: boolean,
+  language?: 'en' | 'zh',
 }) => {
   let formatString = !hideTime
     ? DATE_FORMAT_LONG
@@ -74,6 +76,11 @@ export const formatDate = ({
       break;
   }
 
+  if (language === 'zh' && length !== 'rss') {
+    formatString = length === 'tiny' ? 'M/d'
+      : (hideTime || length === 'short') ? 'yyyy年M月d日'
+        : 'yyyy年M月d日 HH:mm';
+  }
   return showPlaceholder
     ? placeholderString
     : timezone

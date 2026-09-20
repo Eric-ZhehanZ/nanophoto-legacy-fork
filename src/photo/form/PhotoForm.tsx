@@ -1,5 +1,8 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 'use client';
+import { useUiText } from '@/i18n/UiText';
+import UiText from '@/i18n/UiText';
+import './metadata-form.css';
 
 import {
   ComponentProps,
@@ -128,6 +131,7 @@ export default function PhotoForm({
   onFormDataChange?: (formData: Partial<PhotoFormData>) => void,
   onFormStatusChange?: (pending: boolean) => void
 }) {
+  const uiText = useUiText();
   const router = useRouter();
 
   const redirectParam = useSearchParams().get(PARAM_REDIRECT);
@@ -222,7 +226,7 @@ export default function PhotoForm({
         const fields = convertFormKeysToLabels(keysToToast);
         toastSuccess(`Updated EXIF fields: ${fields.join(', ')}`, 8000);
       } else {
-        toastWarning('No new EXIF data found');
+        toastWarning(uiText('No new EXIF data found'));
       }
     }
   }, [updatedExifData]);
@@ -240,7 +244,7 @@ export default function PhotoForm({
           convertOklchToJsonString(ai),
         ));
       } else {
-        toastWarning('Could not generate key color');
+        toastWarning(uiText('Could not generate key color'));
       }
     } catch (error: any) {
       toastWarning(error.message || 'Could not generate key color');
@@ -287,14 +291,28 @@ export default function PhotoForm({
     onFormDataChange?.(formData);
   }, [onFormDataChange, formData]);
 
+
+  useEffect(() => {
+    setFormData(data => ({ ...data,
+      ...(aiContent?.titleZh !== undefined && { titleZh: aiContent.titleZh }),
+      ...(aiContent?.captionZh !== undefined && { captionZh: aiContent.captionZh }),
+      ...(aiContent?.semanticDescriptionZh !== undefined && {
+        semanticDescriptionZh: aiContent.semanticDescriptionZh,
+      }),
+    }));
+  }, [aiContent?.titleZh, aiContent?.captionZh, aiContent?.semanticDescriptionZh]);
+
   const isFieldGeneratingAi = (key: keyof PhotoFormData) => {
     switch (key) {
+      case 'titleZh':
       case 'title':
         return aiContent?.isLoadingTitle;
+      case 'captionZh':
       case 'caption':
         return aiContent?.isLoadingCaption;
       case 'tags':
         return aiContent?.isLoadingTags;
+      case 'semanticDescriptionZh':
       case 'semanticDescription':
         return aiContent?.isLoadingSemantic;
       case 'keyColor':
@@ -347,7 +365,7 @@ export default function PhotoForm({
             onClick={() => {
               if (
                 !formData.keyColor ||
-                confirm('Are you sure you want to overwrite existing content?')
+                confirm(uiText('Are you sure you want to overwrite existing content?'))
               ) {
                 regenerateKeyColor();
               }
@@ -372,11 +390,9 @@ export default function PhotoForm({
     switch (key) {
       case 'url':
         return type === 'edit' && photoStorageUrls.length === 0
-          ? <span className="text-error">
-            No storage found for photo
-          </span>
+          ? <span className="text-error"> <UiText text="No storage found for photo" /> </span>
           : photoStorageUrls.length > 1
-            ? <SmallDisclosure label="Optimized file set">
+            ? <SmallDisclosure label={uiText('Optimized file set')}>
               <div className="space-y-1">
                 {photoStorageUrls.map(({ url, size }) => {
                   const {
@@ -524,7 +540,7 @@ export default function PhotoForm({
     />;
 
   return (
-    <div className="space-y-4 max-w-[38rem]">
+    <div className="photo-metadata-form space-y-4 max-w-[38rem]">
       <div className="relative flex gap-2">
         {thumbnail(true)}
         <div className={clsx(
@@ -562,9 +578,7 @@ export default function PhotoForm({
                 'text-extra-dim',
                 'translate-x-[1px] translate-y-[0.5px]',
               )}
-            />
-            Analyzing image
-          </div>
+            /> <UiText text="Analyzing image" /> </div>
         </div>
       </div>
       {formActionErrorMessage &&
@@ -577,7 +591,7 @@ export default function PhotoForm({
         '*:py-2',
       )}>
         <span className="flex gap-4 max-sm:hidden">
-          <span>Photo Details</span>
+          <span> <UiText text="Photo Details" /> </span>
           <span className="text-extra-extra-dim">/</span>
         </span>
         {FORM_SECTIONS.map(section => (
@@ -593,7 +607,7 @@ export default function PhotoForm({
                 : 'text-dim',
             )}
           >
-            {capitalize(section)}
+            {<UiText>{capitalize(section)}</UiText>}
           </a>
         ))}
       </div>
@@ -651,6 +665,9 @@ export default function PhotoForm({
                     // eslint-disable-next-line max-len
                     const fieldProps: ComponentProps<typeof FieldsetWithStatus> = {
                       id: key,
+                      className: ['title', 'titleZh', 'caption', 'captionZh',
+                        'semanticDescription', 'semanticDescriptionZh'].includes(key)
+                        ? 'metadata-language-field' : 'metadata-full-field',
                       label: label + (
                         key === 'blurData' && shouldDebugImageFallbacks
                           ? ` (${(formData[key] ?? '').length} chars.)`
@@ -897,9 +914,7 @@ export default function PhotoForm({
           <Link
             className="button"
             href={type === 'edit' ? PATH_ADMIN_PHOTOS : PATH_ADMIN_UPLOADS}
-          >
-            Cancel
-          </Link>
+          > <UiText text="Cancel" /> </Link>
           <SubmitButtonWithStatus
             icon={type === 'create' && <IconAddUpload />}
             disabled={!canFormBeSubmitted}
@@ -907,14 +922,14 @@ export default function PhotoForm({
             hideText="never"
             primary
           >
-            {type === 'create' ? 'Add' : 'Update'}
+            {<UiText>{type === 'create' ? 'Add' : 'Update'}</UiText>}
           </SubmitButtonWithStatus>
           <div className={clsx(
             'absolute -top-16 -left-2 right-0 bottom-0 -z-10',
             'pointer-events-none',
             'bg-linear-to-t',
-            'from-white/90 from-60%',
-            'dark:from-black/90 dark:from-50%',
+            'from-[#f5f5f4]/95 from-60%',
+            'dark:from-[#1c1917]/95 dark:from-50%',
           )} />
         </div>
       </Form>

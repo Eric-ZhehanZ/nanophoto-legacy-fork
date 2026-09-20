@@ -1,4 +1,5 @@
 'use client';
+import { useUiText } from '@/i18n/UiText';
 
 import FieldsetTag from '@/tag/FieldsetTag';
 import AppGrid from '@/components/AppGrid';
@@ -33,6 +34,7 @@ export default function AdminComponentPageClient({
     count?: number
   }[]
 }) {
+  const uiText = useUiText();
   const [valuePhoto, setValuePhoto] = useState(photo?.id ?? '');
 
   const [value, setValue] = useState('visible');
@@ -45,7 +47,7 @@ export default function AdminComponentPageClient({
     <AppGrid
       contentMain={<div className="flex flex-col gap-4">
         <FieldsetWithStatus
-          label="Color tint"
+          label={uiText('Color tint')}
           type="checkbox"
           value={tint !== 'off' ? 'true' : 'false'}
           onChange={value => setTint(value === 'true' ? 'on' : 'off')}
@@ -81,7 +83,7 @@ export default function AdminComponentPageClient({
         </div>
         <div className="z-14">
           <FieldsetPhotoChooser
-            label="Photo"
+            label={uiText('Photo')}
             photo={photo}
             photos={photos}
             photosCount={photosCount}
@@ -109,7 +111,7 @@ export default function AdminComponentPageClient({
         </div>
         <div className="z-11">
           <FieldsetWithStatus
-            label="Select"
+            label={uiText('Select')}
             value="tag-1"
             selectOptions={[{
               value: 'tag-1',

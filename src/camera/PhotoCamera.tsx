@@ -1,4 +1,5 @@
 'use client';
+import { useUiText } from '@/i18n/UiText';
 
 import { AiFillApple } from 'react-icons/ai';
 import { pathForCamera } from '@/app/path';
@@ -18,8 +19,9 @@ export default function PhotoCamera({
   camera: Camera
   hideAppleIcon?: boolean
 } & EntityLinkExternalProps) {
+  const uiText = useUiText();
   const { getCameraCount } = useCategoryCounts();
-  
+
   const isApple = isCameraApple(camera);
   const showAppleIcon = !hideAppleIcon && isApple;
 
@@ -31,7 +33,7 @@ export default function PhotoCamera({
       hoverQueryOptions={{ camera }}
       icon={showAppleIcon
         ? <AiFillApple
-          title="Apple"
+          title={uiText('Apple')}
           className="translate-x-[-0.5px] translate-y-[-1px]"
           size={16}
         />

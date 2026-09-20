@@ -22,6 +22,19 @@ html {
 }
 
 @theme {
+  /* Match the main site: neutral warm grays, including translucent borders. */
+  --color-gray-50: var(--color-stone-50);
+  --color-gray-100: var(--color-stone-100);
+  --color-gray-200: var(--color-stone-200);
+  --color-gray-300: var(--color-stone-300);
+  --color-gray-400: var(--color-stone-400);
+  --color-gray-500: var(--color-stone-500);
+  --color-gray-600: var(--color-stone-600);
+  --color-gray-700: var(--color-stone-700);
+  --color-gray-800: var(--color-stone-800);
+  --color-gray-900: var(--color-stone-900);
+  --color-gray-950: var(--color-stone-950);
+
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
 
   --breakpoint-xs: 24.5rem;
@@ -183,15 +196,15 @@ html {
 }
 @utility bg-medium {
   @apply
-    bg-gray-200 dark:bg-gray-700/65
+    bg-stone-200 dark:bg-stone-700/65
 }
 @utility bg-dim {
   @apply
-    bg-gray-100 dark:bg-gray-800/70
+    bg-stone-200/60 dark:bg-stone-800/70
 }
 @utility bg-extra-dim {
   @apply
-    bg-gray-50 dark:bg-gray-900/60
+    bg-stone-100 dark:bg-stone-900/60
 }
 @utility bg-content {
   @apply
@@ -265,7 +278,7 @@ html {
     @apply
       text-[1rem] /* Prevent iOS auto-zoom behavior */
       read-only:cursor-default
-      outline-blue-600 ring-blue-600 appearance-none
+      outline-stone-500 ring-stone-500 appearance-none
       focus:outline-2 -outline-offset-2 focus:ring-0
   }
   input[type=text], input[type=email], input[type=password], select {
@@ -281,7 +294,7 @@ html {
   .disabled-select {
     @apply
       text-medium
-      bg-gray-100 dark:bg-gray-900
+      bg-stone-100 dark:bg-stone-900
       pointer-events-none
       read-only:bg-gray-100
       dark:read-only:bg-gray-900 dark:read-only:text-gray-400

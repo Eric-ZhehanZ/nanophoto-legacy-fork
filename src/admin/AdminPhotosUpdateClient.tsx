@@ -1,4 +1,6 @@
 'use client';
+import { useUiText } from '@/i18n/UiText';
+import UiText from '@/i18n/UiText';
 
 import { Photo } from '@/photo';
 import AdminPhotosTable from '@/admin/AdminPhotosTable';
@@ -27,6 +29,7 @@ export default function AdminPhotosUpdateClient({
   photos: Photo[]
   hasAiContentGeneration: boolean
 }) {
+  const uiText = useUiText();
   // Use refs for non-reactive while loop state
   const photoIdsToSync = useRef(photos.map(photo => photo.id));
   const errorRef = useRef<Error>(undefined);
@@ -51,10 +54,9 @@ export default function AdminPhotosUpdateClient({
 
   return (
     <AdminChildPage
-      backLabel="Photos"
+      backLabel={uiText('Photos')}
       backPath={PATH_ADMIN_PHOTOS}
-      breadcrumb={<ResponsiveText shortText="Updates">
-        Updates ({updateCount})
+      breadcrumb={<ResponsiveText shortText="Updates"> <UiText text="Updates (" /> {updateCount})
       </ResponsiveText>}
       accessory={<ProgressButton
         primary
@@ -120,9 +122,7 @@ export default function AdminPhotosUpdateClient({
     >
       <div className="space-y-6">
         {error && <ErrorNote>
-          <span className="font-bold">
-            Issue syncing:
-          </span>
+          <span className="font-bold"> <UiText text="Issue syncing:" /> </span>
           {' '}
           {error.message}
         </ErrorNote>}
@@ -133,16 +133,12 @@ export default function AdminPhotosUpdateClient({
           <div className="space-y-1.5">
             <div className="font-bold">
               {arePhotoIdsSyncing
-                ? <>Updating photos: {statusText}</>
-                : <>Photo updates: {statusText}</>}
+                ? <> <UiText text="Updating photos:" /> {statusText}</>
+                : <> <UiText text="Photo updates:" /> {statusText}</>}
             </div>
             {arePhotoIdsSyncing
-              ? <>Leave browser open until updates complete</>
-              : <>
-                Sync to capture new EXIF fields, optimize image data,
-                {' '}
-                use AI to generate missing text (if configured)
-              </>}
+              ? <> <UiText text="Leave browser open until updates complete" /> </>
+              : <> <UiText text="Sync to capture new EXIF fields, optimize image data," /> {' '} <UiText text="use AI to generate missing text (if configured)" /> </>}
           </div>
         </Note>
         <div className="space-y-4">

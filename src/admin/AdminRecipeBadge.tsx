@@ -1,3 +1,4 @@
+import UiText from '@/i18n/UiText';
 import { photoLabelForCount } from '@/photo';
 import { clsx } from 'clsx/lite';
 import Badge from '@/components/Badge';
@@ -22,9 +23,7 @@ export default async function AdminRecipeBadge({
       <PhotoRecipe {...{ recipe }} hoverType="image" />
       <div className="text-dim uppercase">
         <span>{count}</span>
-        <span className="hidden xs:inline-block">
-          &nbsp;
-          {photoLabelForCount(count, appText)}
+        <span className="hidden xs:inline-block"> <UiText text="&nbsp;" /> {photoLabelForCount(count, appText)}
         </span>
       </div>
     </div>;

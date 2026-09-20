@@ -1,4 +1,5 @@
 'use client';
+import { useUiText } from '@/i18n/UiText';
 
 import AdminChildPage from '@/components/AdminChildPage';
 import { PATH_ADMIN_UPLOADS } from '@/app/path';
@@ -38,6 +39,7 @@ export default function UploadPageClient({
   shouldStripGpsData?: boolean
   hasLocationServices?: boolean
 }) {
+  const uiText = useUiText();
   const {
     pending,
     setIsPending,
@@ -60,7 +62,7 @@ export default function UploadPageClient({
   return (
     <AdminChildPage
       backPath={PATH_ADMIN_UPLOADS}
-      backLabel="Uploads"
+      backLabel={uiText('Uploads')}
       breadcrumb={pending && updatedTitle
         ? updatedTitle
         : blobId}

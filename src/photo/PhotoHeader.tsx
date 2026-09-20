@@ -1,4 +1,6 @@
 'use client';
+import UiText from '@/i18n/UiText';
+import usePhotoLocalization from './usePhotoLocalization';
 
 import { clsx } from 'clsx/lite';
 import {
@@ -48,6 +50,7 @@ export default function PhotoHeader({
   hasAiContentGeneration: boolean
   includeShareButton?: boolean
 } & PhotoSetCategory) {
+  const localize = usePhotoLocalization();
   const { isGridHighDensity } = useAppState();
 
   const appText = useAppText();
@@ -81,7 +84,7 @@ export default function PhotoHeader({
     <span className="text-dim uppercase text-right">
       {start === end
         ? start
-        : <>{end}<br />&ndash; {start}</>}
+        : <>{end}<br /> <UiText text="&ndash;" /> {start}</>}
     </span>;
 
   const renderContentA = entity
@@ -101,7 +104,7 @@ export default function PhotoHeader({
             UPPERCASE_TITLES && 'uppercase',
           )}
         >
-          {titleForPhoto(selectedPhoto, true)}
+          {titleForPhoto(localize(selectedPhoto), true)}
         </PhotoLink>);
 
   const renderBlock = (content: ReactNode) =>

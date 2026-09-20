@@ -49,6 +49,7 @@ export type AnnotatedTag = {
   label?: string,
   icon?: ReactNode
   annotation?: string,
+  searchTerms?: string,
   annotationAria?: string,
 };
 
@@ -95,13 +96,25 @@ const FORM_METADATA = (
 ): Record<keyof PhotoFormData, FormMeta> => ({
   title: {
     section: 'text',
-    label: 'title',
+    label: 'Title · English',
+    capitalize: true,
+    validateStringMaxLength: STRING_MAX_LENGTH_SHORT,
+  },
+  titleZh: {
+    section: 'text',
+    label: 'Title · 中文',
     capitalize: true,
     validateStringMaxLength: STRING_MAX_LENGTH_SHORT,
   },
   caption: {
     section: 'text',
-    label: 'caption',
+    label: 'Caption · English',
+    capitalize: true,
+    validateStringMaxLength: STRING_MAX_LENGTH_LONG,
+  },
+  captionZh: {
+    section: 'text',
+    label: 'Caption · 中文',
     capitalize: true,
     validateStringMaxLength: STRING_MAX_LENGTH_LONG,
   },
@@ -114,10 +127,16 @@ const FORM_METADATA = (
   semanticDescription: {
     section: 'text',
     type: 'textarea',
-    label: 'semantic description (not visible)',
+    label: 'Semantic description · English',
     capitalize: true,
     validateStringMaxLength: STRING_MAX_LENGTH_LONG,
-    shouldHide: () => !hasAiContentGeneration,
+  },
+  semanticDescriptionZh: {
+    section: 'text',
+    type: 'textarea',
+    label: 'Semantic description · 中文',
+    capitalize: true,
+    validateStringMaxLength: STRING_MAX_LENGTH_LONG,
   },
   keyColor: {
     section: 'text',

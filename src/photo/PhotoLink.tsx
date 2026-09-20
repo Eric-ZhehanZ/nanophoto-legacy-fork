@@ -1,4 +1,6 @@
 'use client';
+import UiText from '@/i18n/UiText';
+import usePhotoLocalization from './usePhotoLocalization';
 
 import { ReactNode, ComponentProps, RefObject } from 'react';
 import { Photo, titleForPhoto } from '@/photo';
@@ -34,6 +36,7 @@ export default function PhotoLink({
   loaderType?: 'spinner' | 'badge'
   showHover?: boolean
 } & PhotoSetCategory) {
+  const localize = usePhotoLocalization();
   const { setNextPhotoAnimation } = useAppState();
 
   const linkProps:
@@ -52,7 +55,7 @@ export default function PhotoLink({
       : undefined;
 
   const children = photo
-    ? (_children ?? titleForPhoto(photo))
+    ? (_children ?? titleForPhoto(localize(photo)))
     : _children;
 
   const link = photo && linkProps
@@ -60,8 +63,7 @@ export default function PhotoLink({
       ? <LinkWithStatus {...linkProps}>
         {({ isLoading }) => <>
           {children}
-          {isLoading && <>
-            &nbsp;<Spinner className="translate-y-[0.5px]" />
+          {isLoading && <> <UiText text="&nbsp;" /> <Spinner className="translate-y-[0.5px]" />
           </>}
         </>}
       </LinkWithStatus>

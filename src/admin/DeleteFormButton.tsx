@@ -1,4 +1,5 @@
 'use client';
+import { useUiText } from '@/i18n/UiText';
 
 import SubmitButtonWithStatus from '@/components/SubmitButtonWithStatus';
 import { useAppState } from '@/app/AppState';
@@ -11,6 +12,7 @@ export default function DeleteFormButton (
     clearLocalState?: boolean
   },
 ) {
+  const uiText = useUiText();
   const {
     onFormSubmit: onFormSubmitProps,
     clearLocalState,
@@ -30,7 +32,7 @@ export default function DeleteFormButton (
 
   return <SubmitButtonWithStatus
     {...rest}
-    title="Delete"
+    title={uiText('Delete')}
     icon={<BiTrash size={16} />}
     spinnerColor="text"
     className={clsx(

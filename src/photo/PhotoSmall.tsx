@@ -1,3 +1,5 @@
+'use client';
+import usePhotoLocalization from './usePhotoLocalization';
 import {
   Photo,
   altTextForPhoto,
@@ -28,6 +30,7 @@ export default function PhotoSmall({
   prefetch?: boolean
   onVisible?: () => void
 } & PhotoSetCategory) {
+  const localize = usePhotoLocalization();
   const ref = useRef<HTMLAnchorElement>(null);
 
   useVisibility({ ref, onVisible });
@@ -51,7 +54,7 @@ export default function PhotoSmall({
         aspectRatio={photo.aspectRatio}
         blurDataURL={photo.blurData}
         blurCompatibilityMode={doesPhotoNeedBlurCompatibility(photo)}
-        alt={altTextForPhoto(photo)}
+        alt={altTextForPhoto(localize(photo))}
         classNameImage={classNameImage}
       />
     </Link>

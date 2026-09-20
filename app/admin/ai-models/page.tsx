@@ -1,3 +1,4 @@
+import UiText from '@/i18n/UiText';
 import AdminInfoPage from '@/admin/AdminInfoPage';
 import AdminAiModelsClient from '@/admin/ai-models/AdminAiModelsClient';
 import { AI_MODEL_COMPARISON_PHOTO_COUNT } from '@/admin/ai-models';
@@ -28,13 +29,9 @@ const getRandomPhotos = async (count: number) => {
 export default async function AdminAiModelsPage() {
   if (!ADMIN_AI_MODEL_DEBUG_ENABLED) {
     return <AdminInfoPage>
-      <div>
-        Set
-        {' '}
+      <div> <UiText text="Set" /> {' '}
         <EnvVar variable="ADMIN_AI_MODEL_DEBUG" />
-        {' '}
-        to {'"1"'} to enable AI model comparisons
-      </div>
+        {' '} <UiText text="to" /> {'"1"'} <UiText text="to enable AI model comparisons" /> </div>
     </AdminInfoPage>;
   }
 

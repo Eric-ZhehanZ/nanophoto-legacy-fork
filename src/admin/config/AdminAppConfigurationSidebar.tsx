@@ -1,4 +1,5 @@
 'use client';
+import UiText from '@/i18n/UiText';
 
 import clsx from 'clsx/lite';
 import { getAdminConfigSections } from '.';
@@ -31,7 +32,7 @@ export default function AdminAppConfigurationSidebar({
                 : 'text-dim hover:text-main',
             )}
           >
-            {title}
+            <UiText>{title}</UiText>
           </a>
         ))}
     </div>

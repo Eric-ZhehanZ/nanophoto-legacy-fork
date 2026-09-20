@@ -1,3 +1,4 @@
+import UiText from '@/i18n/UiText';
 /* eslint-disable react-hooks/set-state-in-effect */
 import FieldsetWithStatus from '@/components/FieldsetWithStatus';
 import {
@@ -214,9 +215,7 @@ export default function FieldsetPhotoChooser({
                   props.onChange?.('');
                   setIsOpen(false);
                 }}
-              >
-                Clear
-              </button>}
+              > <UiText text="Clear" /> </button>}
             </div>
             <div
               ref={refContainer}
@@ -247,17 +246,13 @@ export default function FieldsetPhotoChooser({
                   icon={<IoSearch className="text-dim" />}
                   className="translate-y-8"
                   includeContainer={false}
-                >
-                  No photos found
-                </AdminEmptyState>}
+                > <UiText text="No photos found" /> </AdminEmptyState>}
               {!showQuery && photosToShow.length === 0 &&
                 <AdminEmptyState
                   icon={<TbPhotoSearch className="text-dim" />}
                   className="translate-y-16"
                   includeContainer={false}
-                >
-                  No photos
-                </AdminEmptyState>}
+                > <UiText text="No photos" /> </AdminEmptyState>}
               <div className={CLASSNAME_GRID}>
                 {photosToShow.map(photo => renderPhotoButton(photo))}
               </div>

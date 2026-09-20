@@ -1,4 +1,5 @@
 'use client';
+import UiText from '@/i18n/UiText';
 
 import LoaderButton from '@/components/primitives/LoaderButton';
 import { RecipeProps } from '@/recipe';
@@ -15,8 +16,6 @@ export default function AdminShowRecipeButton(props: RecipeProps) {
         className="translate-y-[1px]"
       />}
       onClick={() => setRecipeModalProps?.(props)}
-    >
-      Preview
-    </LoaderButton>
+    > <UiText text="Preview" /> </LoaderButton>
   );
 }

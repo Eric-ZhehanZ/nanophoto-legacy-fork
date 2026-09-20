@@ -1,4 +1,6 @@
 'use client';
+import { useUiText } from '@/i18n/UiText';
+import UiText from '@/i18n/UiText';
 
 import {
   ComponentProps,
@@ -169,6 +171,7 @@ export default function AdminAppConfigurationClient({
     simplifiedView?: boolean
     isAnalyzingConfiguration?: boolean
   }) {
+  const uiText = useUiText();
   const [hasScrolled, setHasScrolled] = useState(false);
 
   useEffect(() => {
@@ -204,7 +207,7 @@ export default function AdminAppConfigurationClient({
             variable,
             value,
             ...optional && { trailingContent:
-              <span className="text-dim">(optional)</span>,
+              <span className="text-dim"> <UiText text="(optional)" /> </span>,
             },
           }}
         />;
@@ -222,7 +225,7 @@ export default function AdminAppConfigurationClient({
         {label}
       </span>
     </div>;
-    
+
   const renderSubStatusWithEnvVar = (
     type: ComponentProps<typeof StatusIcon>['type'],
     variable: string,
@@ -259,7 +262,7 @@ export default function AdminAppConfigurationClient({
   }) =>
     <ErrorNote className="mt-2 mb-3">
       {connection && <>
-        {connection.provider} connection error: {`"${connection.error}"`}
+        {connection.provider} <UiText text="connection error:" /> {`"${connection.error}"`}
       </>}
       {message}
     </ErrorNote>;
@@ -313,18 +316,12 @@ export default function AdminAppConfigurationClient({
                 // eslint-disable-next-line max-len
                 `Postgres: connected${!isPostgresSslEnabled ? ' (SSL disabled)' : ''}`,
               )
-              : renderSubStatus('missing', <>
-                Postgres:
-                {' '}
+              : renderSubStatus('missing', <> <UiText text="Postgres:" /> {' '}
                 <AdminLink
                   href="https://neon.com/docs/import/import-from-postgres"
                   externalIcon
-                >
-                  create database
-                </AdminLink>
-                {' '}
-                and set DATABASE_URL
-              </>)}
+                > <UiText text="create database" /> </AdminLink>
+                {' '} <UiText text="and set DATABASE_URL" /> </>)}
           </ChecklistRow>
           <ChecklistRow
             title={
@@ -352,9 +349,7 @@ export default function AdminAppConfigurationClient({
                   // eslint-disable-next-line max-len
                     href="https://github.com/sambecker/exif-photo-blog#cloudflare-r2"
                     externalIcon
-                  >
-                    create/configure bucket
-                  </AdminLink>
+                  > <UiText text="create/configure bucket" /> </AdminLink>
                 </>)}
               {hasAwsS3Storage
                 ? renderSubStatus('checked', 'AWS S3: connected')
@@ -364,9 +359,7 @@ export default function AdminAppConfigurationClient({
                   <AdminLink
                     href="https://github.com/sambecker/exif-photo-blog#aws-s3"
                     externalIcon
-                  >
-                    create/configure bucket
-                  </AdminLink>
+                  > <UiText text="create/configure bucket" /> </AdminLink>
                 </>)}
               {hasMinioStorage
                 ? renderSubStatus('checked', 'MinIO: connected')
@@ -376,9 +369,7 @@ export default function AdminAppConfigurationClient({
                   <AdminLink
                     href="https://github.com/sambecker/exif-photo-blog#minio"
                     externalIcon
-                  >
-                    setup MinIO server
-                  </AdminLink>
+                  > <UiText text="setup MinIO server" /> </AdminLink>
                 </>)}
             </div>
           </ChecklistRow>
@@ -391,22 +382,16 @@ export default function AdminAppConfigurationClient({
               : 'Setup auth'}
             status={hasAuthSecret}
             isPending={!hasAuthSecret && isAnalyzingConfiguration}
-          >
-            Store auth secret in environment variable
-            {!hasAuthSecret &&
+          > <UiText text="Store auth secret in environment variable" /> {!hasAuthSecret &&
             <div className="overflow-x-auto">
               <SecretGenerator {...{ secret }} />
             </div>}
             {renderEnvVars(['AUTH_SECRET'])}
           </ChecklistRow>
           <ChecklistRow
-            title="Setup admin user"
+            title={uiText('Setup admin user')}
             status={hasAdminUser}
-          >
-            Store admin email/password
-            {' '}
-            in environment variables
-            {renderEnvVars([
+          > <UiText text="Store admin email/password" /> {' '} <UiText text="in environment variables" /> {renderEnvVars([
               'ADMIN_EMAIL',
               'ADMIN_PASSWORD',
             ])}
@@ -415,74 +400,58 @@ export default function AdminAppConfigurationClient({
       case 'Content':
         return <>
           <ChecklistRow
-            title="Configure language"
+            title={uiText('Configure language')}
             status={hasLocale}
             optional
           >
-            {renderContent(locale)}
-            Check README for
-            {' '}
+            {renderContent(locale)} <UiText text="Check README for" /> {' '}
             <AdminLink
             // eslint-disable-next-line max-len
               href="https://github.com/sambecker/exif-photo-blog?tab=readme-ov-file#supported-languages"
-            >
-              supported languages
-            </AdminLink>
+            > <UiText text="supported languages" /> </AdminLink>
             {renderEnvVars(['NEXT_PUBLIC_LOCALE'])}
           </ChecklistRow>
           <ChecklistRow
-            title="Configure domain"
+            title={uiText('Configure domain')}
             status={hasDomain}
           >
-            {renderContent(domain)}
-            Used in explicit share urls (seen in nav if no title is defined)
-            {renderEnvVars(['NEXT_PUBLIC_DOMAIN'])}
+            {renderContent(domain)} <UiText text="Used in explicit share urls (seen in nav if no title is defined)" /> {renderEnvVars(['NEXT_PUBLIC_DOMAIN'])}
           </ChecklistRow>
           <ChecklistRow
-            title="Meta title"
+            title={uiText('Meta title')}
             status={isMetaTitleConfigured}
             showWarning
           >
-            {renderContent(metaTitle)}
-            Seen in search results and browser tab
-            {renderEnvVars(['NEXT_PUBLIC_META_TITLE'])}
+            {renderContent(metaTitle)} <UiText text="Seen in search results and browser tab" /> {renderEnvVars(['NEXT_PUBLIC_META_TITLE'])}
           </ChecklistRow>
           {!simplifiedView && <>
             <ChecklistRow
-              title="Meta description"
+              title={uiText('Meta description')}
               status={isMetaDescriptionConfigured}
               optional
             >
-              {renderContent(metaDescription)}
-              Seen in search results
-              {renderEnvVars(['NEXT_PUBLIC_META_DESCRIPTION'])}
+              {renderContent(metaDescription)} <UiText text="Seen in search results" /> {renderEnvVars(['NEXT_PUBLIC_META_DESCRIPTION'])}
             </ChecklistRow>
             <ChecklistRow
-              title="Nav title"
+              title={uiText('Nav title')}
               status={hasNavTitle}
               optional
             >
-              {renderContent(navTitle)}
-              Replaces domain in top-right nav
-              {renderEnvVars(['NEXT_PUBLIC_NAV_TITLE'])}
+              {renderContent(navTitle)} <UiText text="Replaces domain in top-right nav" /> {renderEnvVars(['NEXT_PUBLIC_NAV_TITLE'])}
             </ChecklistRow>
             <ChecklistRow
-              title="Nav caption"
+              title={uiText('Nav caption')}
               status={hasNavCaption}
               optional
             >
-              {hasNavCaption && renderContent(navCaption)}
-              Seen in top-right nav, under title
-              {renderEnvVars(['NEXT_PUBLIC_NAV_CAPTION'])}
+              {hasNavCaption && renderContent(navCaption)} <UiText text="Seen in top-right nav, under title" /> {renderEnvVars(['NEXT_PUBLIC_NAV_CAPTION'])}
             </ChecklistRow>
             <ChecklistRow
-              title="Sidebar text"
+              title={uiText('Sidebar text')}
               status={hasSidebarText}
               optional
             >
-              {hasSidebarText && renderContent(sidebarText)}
-              Seen in sidebar on desktop grid view
-              {renderEnvVars(['NEXT_PUBLIC_SIDEBAR_TEXT'])}
+              {hasSidebarText && renderContent(sidebarText)} <UiText text="Seen in sidebar on desktop grid view" /> {renderEnvVars(['NEXT_PUBLIC_SIDEBAR_TEXT'])}
             </ChecklistRow>
           </>}
         </>;
@@ -499,10 +468,7 @@ export default function AdminAppConfigurationClient({
           >
             {redisError && renderError({
               connection: { provider: 'Redis', error: redisError},
-            })}
-            Configure an Upstash Redis database directly
-            to enable rate limiting on external services
-          </ChecklistRow>
+            })} <UiText text="Configure an Upstash Redis database directly to enable rate limiting on external services" /> </ChecklistRow>
           <ChecklistRow
             title={hasOpenaiSecretKey && isAnalyzingConfiguration
               ? 'Testing OpenAI connection'
@@ -515,14 +481,9 @@ export default function AdminAppConfigurationClient({
               && aiContentGenerationProvider === 'openai'
               && renderError({
                 connection: { provider: 'OpenAI', error: aiError},
-              })}
-            Connect directly to your chosen AI provider.
-            Optionally override the model
-            {' '}
+              })} <UiText text="Connect directly to your chosen AI provider. Optionally override the model" /> {' '}
             {'(set OPENAI_MODEL to \'compatible\' to use gpt-4o)'}
-            {' '}
-            or base URL for OpenAI-compatible providers.
-            {renderEnvVars([
+            {' '} <UiText text="or base URL for OpenAI-compatible providers." /> {renderEnvVars([
               { variable: 'OPENAI_SECRET_KEY' },
               { variable: 'OPENAI_MODEL', optional: true, value: openaiModel },
               { variable: 'OPENAI_BASE_URL', optional: true },
@@ -541,34 +502,23 @@ export default function AdminAppConfigurationClient({
                 provider: 'Google Places/Geocoding',
                 error: locationError,
               },
-            })}
-            Store Google Places/Geocoding API key to add location meta
-            to entities like photos and albums
-            {renderEnvVars(['GOOGLE_PLACES_GEOCODING_API_KEY'])}
+            })} <UiText text="Store Google Places/Geocoding API key to add location meta to entities like photos and albums" /> {renderEnvVars(['GOOGLE_PLACES_GEOCODING_API_KEY'])}
           </ChecklistRow>
         </>;
       case 'Location':
         return <>
           <ChecklistRow
-            title="Geo privacy"
+            title={uiText('Geo privacy')}
             status={isGeoPrivacyEnabled}
             optional
-          >
-            Set environment variable to {'"1"'} to disable
-            collection/display of location-based data
-            {renderEnvVars(['NEXT_PUBLIC_GEO_PRIVACY'])}
+          > <UiText text="Set environment variable to" /> {'"1"'} <UiText text="to disable collection/display of location-based data" /> {renderEnvVars(['NEXT_PUBLIC_GEO_PRIVACY'])}
           </ChecklistRow>
           <ChecklistRow
-            title="Auto-generate locations"
+            title={uiText('Auto-generate locations')}
             status={autoGenerateLocations && !isGeoPrivacyEnabled}
             showWarning={autoGenerateLocations && isGeoPrivacyEnabled}
             optional
-          >
-            Set environment variable to {'"1"'} to disable
-            auto-generation of location data (places/geocoding API key
-            must be configured and geo privacy must be disabled
-            for locations to be auto-generated)
-            {renderEnvVars(['DISABLE_AUTO_GENERATE_LOCATIONS'])}
+          > <UiText text="Set environment variable to" /> {'"1"'} <UiText text="to disable auto-generation of location data (places/geocoding API key must be configured and geo privacy must be disabled for locations to be auto-generated)" /> {renderEnvVars(['DISABLE_AUTO_GENERATE_LOCATIONS'])}
           </ChecklistRow>
         </>;
       case 'AI Text':
@@ -594,16 +544,8 @@ export default function AdminAppConfigurationClient({
                   )}
                 </Fragment>)}
             </div>
-            {!isAiContentGenerationEnabled && <>
-              No provider configured above — these
-              fields will not be generated until one is set up.
-              {' '}
-            </>}
-            Comma-separated fields to auto-generate when
-            uploading photos. Accepted values: title, caption,
-            tags, description, all, or none
-            {' '}
-            (default: {renderCommaSeparatedList(
+            {!isAiContentGenerationEnabled && <> <UiText text="No provider configured above — these fields will not be generated until one is set up." /> {' '}
+            </>} <UiText text="Comma-separated fields to auto-generate when uploading photos. Accepted values: title, caption, tags, description, all, or none" /> {' '} <UiText text="(default:" /> {renderCommaSeparatedList(
               AI_AUTO_GENERATED_FIELDS_DEFAULT,
             )})
             {renderEnvVars(['AI_TEXT_AUTO_GENERATED_FIELDS'])}
@@ -612,14 +554,10 @@ export default function AdminAppConfigurationClient({
       case 'Performance':
         return <>
           <ChecklistRow
-            title="Static optimization"
+            title={uiText('Static optimization')}
             status={isStaticallyOptimized}
             optional
-          >
-            Set environment variable to {'"1"'} to make site more responsive
-            by enabling static optimization
-            (i.e., rendering pages and images at build time)
-            <div>
+          > <UiText text="Set environment variable to" /> {'"1"'} <UiText text="to make site more responsive by enabling static optimization (i.e., rendering pages and images at build time)" /> <div>
               {renderSubStatusWithEnvVar(
                 arePhotosStaticallyOptimized ? 'checked' : 'optional',
                 'NEXT_PUBLIC_STATICALLY_OPTIMIZE_PHOTOS',
@@ -640,100 +578,74 @@ export default function AdminAppConfigurationClient({
             </div>
           </ChecklistRow>
           <ChecklistRow
-            title="Preserve original uploads"
+            title={uiText('Preserve original uploads')}
             status={areOriginalUploadsPreserved}
             optional
-          >
-            Set environment variable to {'"1"'} to prevent
-            image uploads being compressed before storing
-            {renderEnvVars(['NEXT_PUBLIC_PRESERVE_ORIGINAL_UPLOADS'])}
+          > <UiText text="Set environment variable to" /> {'"1"'} <UiText text="to prevent image uploads being compressed before storing" /> {renderEnvVars(['NEXT_PUBLIC_PRESERVE_ORIGINAL_UPLOADS'])}
           </ChecklistRow>
           <ChecklistRow
             title={`Image quality: ${imageQuality}`}
             status={hasImageQuality}
             optional
-          >
-            Set environment variable from {'"1-100"'}
-            {' '}
-            to control the quality of large photos
-            ({'"100"'} represents highest quality/largest size)
-            {renderEnvVars(['NEXT_PUBLIC_IMAGE_QUALITY'])}
+          > <UiText text="Set environment variable from" /> {'"1-100"'}
+            {' '} <UiText text="to control the quality of large photos (" /> {'"100"'} <UiText text="represents highest quality/largest size)" /> {renderEnvVars(['NEXT_PUBLIC_IMAGE_QUALITY'])}
           </ChecklistRow>
           <ChecklistRow
-            title="Image blur"
+            title={uiText('Image blur')}
             status={isBlurEnabled}
             optional
-          >
-            Set environment variable to {'"1"'} to prevent
-            image blur data being stored and displayed
-            {renderEnvVars(['NEXT_PUBLIC_DISABLE_BLUR'])}
-          </ChecklistRow> 
+          > <UiText text="Set environment variable to" /> {'"1"'} <UiText text="to prevent image blur data being stored and displayed" /> {renderEnvVars(['NEXT_PUBLIC_DISABLE_BLUR'])}
+          </ChecklistRow>
         </>;
       case 'Categories':
         return <>
           <ChecklistRow
-            title="Visibility and ordering"
+            title={uiText('Visibility and ordering')}
             status={hasCategoryVisibility}
             optional
           >
             {renderOrderedKeyList(categoryVisibility, CATEGORY_KEYS)}
-            <div>
-              Configure order and visibility of categories
-              (seen in grid sidebar and CMD-K results)
-              by storing comma-separated values
-              (default: {renderCommaSeparatedList(DEFAULT_CATEGORY_KEYS)})
+            <div> <UiText text="Configure order and visibility of categories (seen in grid sidebar and CMD-K results) by storing comma-separated values (default:" /> {renderCommaSeparatedList(DEFAULT_CATEGORY_KEYS)})
             </div>
             {renderEnvVars(['NEXT_PUBLIC_CATEGORY_VISIBILITY'])}
           </ChecklistRow>
           <ChecklistRow
-            title="Show on mobile"
+            title={uiText('Show on mobile')}
             status={showCategoriesOnMobile}
             optional
           >
             <div className="flex flex-col gap-2">
-              <div>
-                Set environment variable to {'"1"'} to prevent categories
-                displaying on mobile grid view
-                {renderEnvVars(['NEXT_PUBLIC_HIDE_CATEGORIES_ON_MOBILE'])}
+              <div> <UiText text="Set environment variable to" /> {'"1"'} <UiText text="to prevent categories displaying on mobile grid view" /> {renderEnvVars(['NEXT_PUBLIC_HIDE_CATEGORIES_ON_MOBILE'])}
               </div>
             </div>
           </ChecklistRow>
           <ChecklistRow
-            title="Show image hovers"
+            title={uiText('Show image hovers')}
             status={showCategoryImageHover}
             optional
           >
             <div className="flex flex-col gap-2">
-              <div>
-                Set environment variable to {'"1"'} to prevent images
-                displaying when hovering over category links
-                {renderEnvVars(['NEXT_PUBLIC_HIDE_CATEGORY_IMAGE_HOVERS'])}
+              <div> <UiText text="Set environment variable to" /> {'"1"'} <UiText text="to prevent images displaying when hovering over category links" /> {renderEnvVars(['NEXT_PUBLIC_HIDE_CATEGORY_IMAGE_HOVERS'])}
               </div>
             </div>
           </ChecklistRow>
           <ChecklistRow
-            title="Collapsible sidebar"
+            title={uiText('Collapsible sidebar')}
             status={collapseSidebarCategories}
             optional
-          >
-            Set environment variable to {'"1"'} to always show
-            expanded category content
-            {renderEnvVars(['NEXT_PUBLIC_EXHAUSTIVE_SIDEBAR_CATEGORIES'])}
+          > <UiText text="Set environment variable to" /> {'"1"'} <UiText text="to always show expanded category content" /> {renderEnvVars(['NEXT_PUBLIC_EXHAUSTIVE_SIDEBAR_CATEGORIES'])}
           </ChecklistRow>
           <ChecklistRow
-            title="Hide tags with only 1 photo"
+            title={uiText('Hide tags with only 1 photo')}
             status={hideTagsWithOnePhoto}
             optional
-          >
-            Set environment variable to {'"1"'} to only show tags
-            with 2 or more photos
-            {renderEnvVars(['NEXT_PUBLIC_HIDE_TAGS_WITH_ONE_PHOTO'])}
+          > <UiText text="Set environment variable to" /> {'"1"'} <UiText text="to only show tags with 2 or more photos" /> {renderEnvVars(['NEXT_PUBLIC_HIDE_TAGS_WITH_ONE_PHOTO'])}
           </ChecklistRow>
         </>;
       case 'Sorting':
         return <>
           <ChecklistRow
-            title="Default order"
+            title={uiText('Default order')}
             status={hasDefaultSortBy}
             optional
           >
@@ -748,44 +660,29 @@ export default function AdminAppConfigurationClient({
                         : ''}`,
                     )}
                   </Fragment>)}
-            </div>
-            Change default sort on grid/full homepages
-            {renderEnvVars(['NEXT_PUBLIC_DEFAULT_SORT'])}
+            </div> <UiText text="Change default sort on grid/full homepages" /> {renderEnvVars(['NEXT_PUBLIC_DEFAULT_SORT'])}
           </ChecklistRow>
           <ChecklistRow
             title={`Nav sort control: ${navSortControl}`}
             status={hasNavSortControl}
             optional
-          >
-            Set environment variable to {'"none"'}, {'"toggle"'} (default),
-            or {'"menu"'}, to control sort UI on grid/full homepages
-            {renderEnvVars(['NEXT_PUBLIC_NAV_SORT_CONTROL'])}
+          > <UiText text="Set environment variable to" /> {'"none"'}, {'"toggle"'} <UiText text="(default), or" /> {'"menu"'} <UiText text=", to control sort UI on grid/full homepages" /> {renderEnvVars(['NEXT_PUBLIC_NAV_SORT_CONTROL'])}
           </ChecklistRow>
           <ChecklistRow
-            title="Color sort"
+            title={uiText('Color sort')}
             status={isColorSortEnabled}
             experimental
             optional
-          >
-            Set environment variable to {'"1"'} to enable color-based sorting
-            (forces nav sort control to {'"menu,"'} flags photos missing
-            color data in admin dashboard)—color identification
-            benefits greatly from AI being enabled
-            {renderEnvVars([
+          > <UiText text="Set environment variable to" /> {'"1"'} <UiText text="to enable color-based sorting (forces nav sort control to" /> {'"menu,"'} <UiText text="flags photos missing color data in admin dashboard)—color identification benefits greatly from AI being enabled" /> {renderEnvVars([
               'NEXT_PUBLIC_COLOR_SORT',
             ])}
           </ChecklistRow>
           <ChecklistRow
-            title="Color sort configuration"
+            title={uiText('Color sort configuration')}
             status={hasColorSortConfiguration}
             experimental
             optional
-          >
-            Configure which colors start first
-            (accepts a hue of 0 to 360, default: 80)
-            and which are considered sufficiently vibrant
-            (accepts a chroma of 0 to 0.37, default: 0.05)
-            <div>
+          > <UiText text="Configure which colors start first (accepts a hue of 0 to 360, default: 80) and which are considered sufficiently vibrant (accepts a chroma of 0 to 0.37, default: 0.05)" /> <div>
               <EnvVar
                 variable="NEXT_PUBLIC_COLOR_SORT_STARTING_HUE"
                 value={colorSortStartingHue}
@@ -802,111 +699,77 @@ export default function AdminAppConfigurationClient({
             </div>
           </ChecklistRow>
           <ChecklistRow
-            title="Priority-based"
+            title={uiText('Priority-based')}
             status={isSortWithPriority}
             optional
-          >
-            Set environment variable to {'"1"'} to take priority field
-            into account when sorting photos (enabling may have
-            performance consequences)
-            {renderEnvVars(['NEXT_PUBLIC_PRIORITY_BASED_SORTING'])}
+          > <UiText text="Set environment variable to" /> {'"1"'} <UiText text="to take priority field into account when sorting photos (enabling may have performance consequences)" /> {renderEnvVars(['NEXT_PUBLIC_PRIORITY_BASED_SORTING'])}
           </ChecklistRow>
         </>;
       case 'Display':
         return <>
           <ChecklistRow
-            title="Show keyboard shortcut tooltips"
+            title={uiText('Show keyboard shortcut tooltips')}
             status={showKeyboardShortcutTooltips}
             optional
-          >
-            Set environment variable to {'"1"'} to hide keyboard shortcut
-            tooltips in areas like the main nav, and previous/next photo links
-            {renderEnvVars(['NEXT_PUBLIC_HIDE_KEYBOARD_SHORTCUT_TOOLTIPS'])}
+          > <UiText text="Set environment variable to" /> {'"1"'} <UiText text="to hide keyboard shortcut tooltips in areas like the main nav, and previous/next photo links" /> {renderEnvVars(['NEXT_PUBLIC_HIDE_KEYBOARD_SHORTCUT_TOOLTIPS'])}
           </ChecklistRow>
           <ChecklistRow
-            title="Show EXIF data"
+            title={uiText('Show EXIF data')}
             status={showExifInfo}
             optional
-          >
-            Set environment variable to {'"1"'} to hide EXIF data
-            {renderEnvVars(['NEXT_PUBLIC_HIDE_EXIF_DATA'])}
+          > <UiText text="Set environment variable to" /> {'"1"'} <UiText text="to hide EXIF data" /> {renderEnvVars(['NEXT_PUBLIC_HIDE_EXIF_DATA'])}
           </ChecklistRow>
           <ChecklistRow
-            title="Always show exposure compensation"
+            title={uiText('Always show exposure compensation')}
             status={alwaysShowExposureComp}
             optional
-          >
-            Set environment variable to {'"1"'} to always show
-            exposure compensation even when {'it\'s'} 0ev
-            {renderEnvVars(['NEXT_PUBLIC_ALWAYS_SHOW_EXPOSURE_COMP'])}
+          > <UiText text="Set environment variable to" /> {'"1"'} <UiText text="to always show exposure compensation even when" /> {'it\'s'} <UiText text="0ev" /> {renderEnvVars(['NEXT_PUBLIC_ALWAYS_SHOW_EXPOSURE_COMP'])}
           </ChecklistRow>
           <ChecklistRow
-            title="Show zoom controls"
+            title={uiText('Show zoom controls')}
             status={showZoomControls}
             optional
-          >
-            Set environment variable to {'"1"'} to hide
-            fullscreen photo zoom controls
-            {renderEnvVars(['NEXT_PUBLIC_HIDE_ZOOM_CONTROLS'])}
+          > <UiText text="Set environment variable to" /> {'"1"'} <UiText text="to hide fullscreen photo zoom controls" /> {renderEnvVars(['NEXT_PUBLIC_HIDE_ZOOM_CONTROLS'])}
           </ChecklistRow>
           <ChecklistRow
-            title="Show taken at time"
+            title={uiText('Show taken at time')}
             status={showTakenAtTimeHidden}
             optional
-          >
-            Set environment variable to {'"1"'} to hide
-            taken at time from photo meta
-            {renderEnvVars(['NEXT_PUBLIC_HIDE_TAKEN_AT_TIME'])}
+          > <UiText text="Set environment variable to" /> {'"1"'} <UiText text="to hide taken at time from photo meta" /> {renderEnvVars(['NEXT_PUBLIC_HIDE_TAKEN_AT_TIME'])}
           </ChecklistRow>
           <ChecklistRow
-            title="Show template attribution"
+            title={uiText('Show template attribution')}
             status={showRepoLink}
             optional
-          >
-            Set environment variable to {'"1"'} to
-            hide {'\"made with exif-photo-blog\"'} references
-            {renderEnvVars(['NEXT_PUBLIC_HIDE_TEMPLATE_ATTRIBUTION'])}
+          > <UiText text="Set environment variable to" /> {'"1"'} <UiText text="to hide" /> {'\"made with exif-photo-blog\"'} <UiText text="references" /> {renderEnvVars(['NEXT_PUBLIC_HIDE_TEMPLATE_ATTRIBUTION'])}
           </ChecklistRow>
         </>;
       case 'Grid':
         return <>
           <ChecklistRow
-            title="Grid homepage"
+            title={uiText('Grid homepage')}
             status={isGridHomepageEnabled}
             optional
-          >
-            Set environment variable to {'"1"'} to show grid layout
-            on homepage
-            {renderEnvVars(['NEXT_PUBLIC_GRID_HOMEPAGE'])}
+          > <UiText text="Set environment variable to" /> {'"1"'} <UiText text="to show grid layout on homepage" /> {renderEnvVars(['NEXT_PUBLIC_GRID_HOMEPAGE'])}
           </ChecklistRow>
           <ChecklistRow
-            title="Masonry grid"
+            title={uiText('Masonry grid')}
             status={isMasonryGridEnabled}
             optional
-          >
-            Set environment variable to {'"1"'} to show masonry grid layout
-            {renderEnvVars(['NEXT_PUBLIC_MASONRY_GRID'])}
+          > <UiText text="Set environment variable to" /> {'"1"'} <UiText text="to show masonry grid layout" /> {renderEnvVars(['NEXT_PUBLIC_MASONRY_GRID'])}
           </ChecklistRow>
           <ChecklistRow
             title={`Grid aspect ratio: ${gridAspectRatio}`}
             status={hasGridAspectRatio}
             optional
-          >
-            Set environment variable to any number to enforce aspect ratio
-            {' '}
-            (default is {'"1"'}, i.e., square)—set to {'"0"'} to disable
-            {renderEnvVars(['NEXT_PUBLIC_GRID_ASPECT_RATIO'])}
+          > <UiText text="Set environment variable to any number to enforce aspect ratio" /> {' '} <UiText text="(default is" /> {'"1"'} <UiText text=", i.e., square)—set to" /> {'"0"'} <UiText text="to disable" /> {renderEnvVars(['NEXT_PUBLIC_GRID_ASPECT_RATIO'])}
           </ChecklistRow>
           <ChecklistRow
             title={`Grid density: ${hasHighGridDensity ? 'high' : 'low'}`}
             status={hasGridDensityPreference}
             optional
-          >
-            Set environment variable to {'"1"'} to ensure large thumbnails
-            on photo grid views (if not configured, density is based on
-            aspect ratio)
-            {renderEnvVars(['NEXT_PUBLIC_SHOW_LARGE_THUMBNAILS'])}
-          </ChecklistRow> 
+          > <UiText text="Set environment variable to" /> {'"1"'} <UiText text="to ensure large thumbnails on photo grid views (if not configured, density is based on aspect ratio)" /> {renderEnvVars(['NEXT_PUBLIC_SHOW_LARGE_THUMBNAILS'])}
+          </ChecklistRow>
         </>;
       case 'Design':
         return <>
@@ -916,41 +779,28 @@ export default function AdminAppConfigurationClient({
             optional
           >
             {'Set environment variable to \'light\' or \'dark\''}
-            {' '}
-            to configure initial theme
-            {' '}
-            (defaults to {'\'system\''})
+            {' '} <UiText text="to configure initial theme" /> {' '} <UiText text="(defaults to" /> {'\'system\''})
             {renderEnvVars(['NEXT_PUBLIC_DEFAULT_THEME'])}
           </ChecklistRow>
           <ChecklistRow
-            title="Uppercase titles"
+            title={uiText('Uppercase titles')}
             status={arePhotoTitlesUppercase}
             optional
-          >
-            Set environment variable to {'"1"'} to prevent
-            photo titles and captions from displaying in uppercase
-            {renderEnvVars(['NEXT_PUBLIC_DISABLE_UPPERCASE_TITLES'])}
+          > <UiText text="Set environment variable to" /> {'"1"'} <UiText text="to prevent photo titles and captions from displaying in uppercase" /> {renderEnvVars(['NEXT_PUBLIC_DISABLE_UPPERCASE_TITLES'])}
           </ChecklistRow>
           <ChecklistRow
-            title="Photo matting"
+            title={uiText('Photo matting')}
             status={arePhotosMatted}
             optional
-          >
-            Set environment variable to {'"1"'} to constrain the size
-            {' '}
-            of each photo, and display a surrounding border
-            <div className="pt-1 flex flex-col gap-1">
+          > <UiText text="Set environment variable to" /> {'"1"'} <UiText text="to constrain the size" /> {' '} <UiText text="of each photo, and display a surrounding border" /> <div className="pt-1 flex flex-col gap-1">
               <EnvVar variable="NEXT_PUBLIC_MATTE_PHOTOS" />
             </div>
           </ChecklistRow>
           <ChecklistRow
-            title="Custom photo matting colors"
+            title={uiText('Custom photo matting colors')}
             status={arePhotoMatteColorsConfigured}
             optional
-          >
-            Set environment variable hex values (e.g., #cccccc)
-            to override matte colors
-            <div className="pt-1 flex flex-col gap-1">
+          > <UiText text="Set environment variable hex values (e.g., #cccccc) to override matte colors" /> <div className="pt-1 flex flex-col gap-1">
               <EnvVar
                 variable="NEXT_PUBLIC_MATTE_COLOR"
                 accessory={matteColor && renderColorDot(matteColor)}
@@ -962,67 +812,50 @@ export default function AdminAppConfigurationClient({
             </div>
           </ChecklistRow>
           <ChecklistRow
-            title="Tinted folders"
+            title={uiText('Tinted folders')}
             status={areFoldersTinted}
             optional
-          >
-            Set environment variable to {'"1"'} to show tinted folders
-            {' '}
-            on {renderLink(PATH_LIBRARY)} page
-            {renderEnvVars(['NEXT_PUBLIC_TINT_FOLDERS'])}
+          > <UiText text="Set environment variable to" /> {'"1"'} <UiText text="to show tinted folders" /> {' '} <UiText text="on" /> {renderLink(PATH_LIBRARY)} <UiText text="page" /> {renderEnvVars(['NEXT_PUBLIC_TINT_FOLDERS'])}
           </ChecklistRow>
         </>;
       case 'Settings':
         return <>
           <ChecklistRow
-            title="Public downloads"
+            title={uiText('Public downloads')}
             status={arePublicDownloadsEnabled}
             optional
-          >
-            Set environment variable to {'"1"'} to enable
-            public photo downloads for all visitors
-            {renderEnvVars(['NEXT_PUBLIC_ALLOW_PUBLIC_DOWNLOADS'])}
+          > <UiText text="Set environment variable to" /> {'"1"'} <UiText text="to enable public photo downloads for all visitors" /> {renderEnvVars(['NEXT_PUBLIC_ALLOW_PUBLIC_DOWNLOADS'])}
           </ChecklistRow>
           <ChecklistRow
-            title="Share modal options"
+            title={uiText('Share modal options')}
             status={hasSocialKeys}
             optional
           >
             {renderOrderedKeyList(socialKeys, SOCIAL_KEYS)}
-            <div>
-              Configure order and visibility of share modal 
-              options by storing comma-separated values
-              (accepts {'"all"'} or {'"none"'},
-              defaults to {renderCommaSeparatedList(DEFAULT_SOCIAL_KEYS)})
+            <div> <UiText text="Configure order and visibility of share modal options by storing comma-separated values (accepts" /> {'"all"'} <UiText text="or" /> {'"none"'} <UiText text=", defaults to" /> {renderCommaSeparatedList(DEFAULT_SOCIAL_KEYS)})
             </div>
             {renderEnvVars(['NEXT_PUBLIC_SOCIAL_NETWORKS'])}
           </ChecklistRow>
           <ChecklistRow
-            title="Site feeds (JSON/RSS)"
+            title={uiText('Site feeds (JSON/RSS)')}
             status={areSiteFeedsEnabled}
             optional
-          >
-            Set environment variable to {'"1"'} to enable
-            {' '}
-            {renderLink(PATH_FEED_JSON)} and {renderLink(PATH_RSS_XML)}
-            {' '}
-            feeds
-            {renderEnvVars(['NEXT_PUBLIC_SITE_FEEDS'])}
+          > <UiText text="Set environment variable to" /> {'"1"'} <UiText text="to enable" /> {' '}
+            {renderLink(PATH_FEED_JSON)} <UiText text="and" /> {renderLink(PATH_RSS_XML)}
+            {' '} <UiText text="feeds" /> {renderEnvVars(['NEXT_PUBLIC_SITE_FEEDS'])}
           </ChecklistRow>
           <ChecklistRow
-            title="Legacy OG text alignment"
+            title={uiText('Legacy OG text alignment')}
             status={isOgTextBottomAligned}
             optional
-          >
-            Set environment variable to {'"BOTTOM"'} to
-            keep OG image text bottom aligned (default is {'"top"'})
+          > <UiText text="Set environment variable to" /> {'"BOTTOM"'} <UiText text="to keep OG image text bottom aligned (default is" /> {'"top"'})
             {renderEnvVars(['NEXT_PUBLIC_OG_TEXT_ALIGNMENT'])}
           </ChecklistRow>
         </>;
       case 'Scripts & Analytics':
         return <>
           <ChecklistRow
-            title="Custom page scripts"
+            title={uiText('Custom page scripts')}
             status={hasPageScriptUrls}
             optional
           >
@@ -1042,63 +875,44 @@ export default function AdminAppConfigurationClient({
                       {url}
                     </span>
                   </MaskedScroll>)}
-              </div>}
-            Set environment variable to comma-separated list of URLs
-            to be added to the bottom of the body tag via {'"next/script"'}
+              </div>} <UiText text="Set environment variable to comma-separated list of URLs to be added to the bottom of the body tag via" /> {'"next/script"'}
             {renderEnvVars(['PAGE_SCRIPT_URLS'])}
           </ChecklistRow>
         </>;
       case 'Debugging':
         return <>
           <ChecklistRow
-            title="Debug outputs"
+            title={uiText('Debug outputs')}
             status={isDebuggingEnabled}
             optional
-          >
-            Set environment variable to {'"1"'} to disable build identifier
-            and admin configuration export
-            {renderEnvVars(['DISABLE_DEBUG_OUTPUTS'])}
+          > <UiText text="Set environment variable to" /> {'"1"'} <UiText text="to disable build identifier and admin configuration export" /> {renderEnvVars(['DISABLE_DEBUG_OUTPUTS'])}
           </ChecklistRow>
         </>;
       case 'Internal':
         return <>
           <ChecklistRow
-            title="Debug tools"
+            title={uiText('Debug tools')}
             status={areAdminDebugToolsEnabled}
             optional
-          >
-            Set environment variable to {'"1"'} to temporarily enable
-            features like photo matting, baseline grid, etc.
-            {renderEnvVars(['ADMIN_DEBUG_TOOLS'])}
+          > <UiText text="Set environment variable to" /> {'"1"'} <UiText text="to temporarily enable features like photo matting, baseline grid, etc." /> {renderEnvVars(['ADMIN_DEBUG_TOOLS'])}
           </ChecklistRow>
           <ChecklistRow
-            title="SQL debugging"
+            title={uiText('SQL debugging')}
             status={isAdminSqlDebugEnabled}
             optional
-          >
-            Set environment variable to {'"1"'} to enable
-            console output for all sql queries
-            {renderEnvVars(['ADMIN_SQL_DEBUG'])}
+          > <UiText text="Set environment variable to" /> {'"1"'} <UiText text="to enable console output for all sql queries" /> {renderEnvVars(['ADMIN_SQL_DEBUG'])}
           </ChecklistRow>
           <ChecklistRow
-            title="Storage debugging"
+            title={uiText('Storage debugging')}
             status={isAdminStorageDebugEnabled}
             optional
-          >
-            Set environment variable to {'"1"'} to enable
-            storage debugging
-            {renderEnvVars(['ADMIN_STORAGE_DEBUG'])}
+          > <UiText text="Set environment variable to" /> {'"1"'} <UiText text="to enable storage debugging" /> {renderEnvVars(['ADMIN_STORAGE_DEBUG'])}
           </ChecklistRow>
           <ChecklistRow
-            title="AI model debugging"
+            title={uiText('AI model debugging')}
             status={isAdminAiModelDebugEnabled}
             optional
-          >
-            Set environment variable to {'"1"'} to enable
-            the <AdminLink href={PATH_ADMIN_AI_MODELS}>
-              AI model comparison
-            </AdminLink> page
-            {renderEnvVars(['ADMIN_AI_MODEL_DEBUG'])}
+          > <UiText text="Set environment variable to" /> {'"1"'} <UiText text="to enable the" /> <AdminLink href={PATH_ADMIN_AI_MODELS}> <UiText text="AI model comparison" /> </AdminLink> <UiText text="page" /> {renderEnvVars(['ADMIN_AI_MODEL_DEBUG'])}
           </ChecklistRow>
         </>;
     }
@@ -1120,10 +934,7 @@ export default function AdminAppConfigurationClient({
           </ChecklistGroup>
         ))}
       <div className="pl-11 pr-2 sm:pr-11 mt-4 md:mt-7">
-        <div>
-          Changes to environment variables require a new deployment
-          to take effect
-        </div>
+        <div> <UiText text="Changes to environment variables require a new deployment to take effect" /> </div>
       </div>
     </ScoreCardContainer>
   );

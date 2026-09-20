@@ -1,4 +1,5 @@
 'use client';
+import { useUiText } from '@/i18n/UiText';
 
 import Spinner, { SpinnerColor } from '@/components/Spinner';
 import { clsx } from 'clsx/lite';
@@ -20,7 +21,7 @@ export default function LoaderButton({
   spinnerClassName,
   styleAs = 'button',
   hideText = 'on-mobile',
-  confirmText,
+  confirmText: confirmTextRaw,
   shouldPreventDefault,
   primary,
   hideFocusOutline,
@@ -28,7 +29,7 @@ export default function LoaderButton({
   onClick,
   disabled,
   className,
-  tooltip,
+  tooltip: tooltipRaw,
   tooltipColor,
   tooltipSide,
   ...rest
@@ -49,6 +50,9 @@ export default function LoaderButton({
   tooltipColor?: ComponentProps<typeof Tooltip>['color']
   tooltipSide?: ComponentProps<typeof Tooltip>['side']
 } & ButtonHTMLAttributes<HTMLButtonElement>) {
+  const t = useUiText();
+  const confirmText = typeof confirmTextRaw === 'string' ? t(confirmTextRaw) : confirmTextRaw;
+  const tooltip = typeof tooltipRaw === 'string' ? t(tooltipRaw) : tooltipRaw;
   const button =
     <button
       {...rest}
@@ -76,7 +80,7 @@ export default function LoaderButton({
         hideFocusOutline && [
           'focus:outline-hidden',
           'focus-visible:outline-2',
-          'focus-visible:outline-blue-600',
+          'focus-visible:outline-stone-600',
           'focus-visible:outline-offset-2',
         ],
         className,

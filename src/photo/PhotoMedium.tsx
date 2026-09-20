@@ -1,4 +1,5 @@
 'use client';
+import usePhotoLocalization from './usePhotoLocalization';
 
 import {
   Photo,
@@ -34,6 +35,7 @@ export default function PhotoMedium({
   onVisible?: () => void
   debugColor?: boolean
 } & PhotoSetCategory) {
+  const localize = usePhotoLocalization();
   const ref = useRef<HTMLAnchorElement>(null);
 
   useVisibility({ ref, onVisible });
@@ -78,7 +80,7 @@ export default function PhotoMedium({
             blurCompatibilityMode={doesPhotoNeedBlurCompatibility(photo)}
             className="flex object-cover w-full h-full"
             classNameImage="object-cover w-full h-full"
-            alt={altTextForPhoto(photo)}
+            alt={altTextForPhoto(localize(photo))}
             loading={priority ? 'eager' : undefined}
           />
         </div>}

@@ -1,4 +1,5 @@
 'use client';
+import { useAppLanguage } from '@/i18n/state/client';
 
 import { useAppState } from '@/app/AppState';
 import { formatDate } from '@/utility/date';
@@ -15,6 +16,7 @@ export default function ResponsiveDate({
   className?: string
   titleLabel?: string
 } & Parameters<typeof formatDate>[0]) {
+  const language = useAppLanguage();
   const { timezone: timezoneFromState } = useAppState();
 
   const timezone = timezoneFromProps ?? timezoneFromState;
@@ -23,6 +25,7 @@ export default function ResponsiveDate({
 
   const formatDateProps: Parameters<typeof formatDate>[0] = {
     date,
+    language,
     length,
     timezone,
   };
@@ -44,7 +47,7 @@ export default function ResponsiveDate({
 
   return (
     <span
-      title={showPlaceholder ? 'LOADING LOCAL TIME' : title}
+      title={showPlaceholder ? (language === 'zh' ? '正在加载当地时间' : 'LOADING LOCAL TIME') : title}
       className={clsx(
         'uppercase rounded-md transition-colors whitespace-nowrap',
         showPlaceholder && 'bg-dim',

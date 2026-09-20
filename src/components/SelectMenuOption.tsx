@@ -1,3 +1,4 @@
+import UiText from '@/i18n/UiText';
 import clsx from 'clsx/lite';
 import { ReactNode, useEffect, useRef } from 'react';
 import IconCheck from './icons/IconCheck';
@@ -63,15 +64,15 @@ export default function SelectMenuOption<T = string>({
             {accessoryStart}
           </div>}
         <div className="grow min-w-0">
-          <div className="grow truncate">{label}</div>
+          <div className="grow truncate">{<UiText>{label}</UiText>}</div>
           {note &&
             <div className="text-sm text-dim truncate">
-              {note}
+              {<UiText>{note}</UiText>}
             </div>}
         </div>
         {(accessoryEnd || isSelected) &&
           <div className="shrink-0 text-dim">
-            {isSelected 
+            {isSelected
               ? <IconCheck size={13} className="text-main" />
               : accessoryEnd}
           </div>}

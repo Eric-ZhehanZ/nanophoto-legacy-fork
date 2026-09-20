@@ -123,7 +123,7 @@ const generateImageObjectQuery = async <T extends z.ZodSchema>(
     output: Output.object({ schema }),
   }).then(result => Object.fromEntries(Object
     .entries(result.output || {})
-    .map(([k, v]) => [k, cleanUpAiTextResponse(v as string)]),
+    .map(([k, v]) => [k, typeof v === 'string' ? cleanUpAiTextResponse(v) : v]),
   ) as z.infer<T>);
 };
 

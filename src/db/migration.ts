@@ -11,6 +11,26 @@ interface Migration {
 }
 
 export const MIGRATIONS: Migration[] = [{
+  label: '12: Bilingual photo metadata and unified tags',
+  fields: ['title_zh', 'caption_zh', 'semantic_description_zh'],
+  missingRelation: 'photo_tags',
+  run: () => query(`
+    ALTER TABLE photos ADD COLUMN IF NOT EXISTS title_zh TEXT,
+      ADD COLUMN IF NOT EXISTS caption_zh TEXT,
+      ADD COLUMN IF NOT EXISTS semantic_description_zh TEXT;
+    CREATE TABLE IF NOT EXISTS photo_tags (
+      tag TEXT PRIMARY KEY,
+      name_en TEXT NOT NULL,
+      name_zh TEXT NOT NULL DEFAULT '',
+      aliases TEXT[] NOT NULL DEFAULT '{}'
+    );
+    INSERT INTO photo_tags(tag, name_en)
+      SELECT DISTINCT t, replace(t, '-', ' ')
+      FROM photos, unnest(tags) t
+      WHERE t NOT IN ('favs', 'private')
+      ON CONFLICT DO NOTHING;
+  `),
+}, {
   label: '01: AI Text Generation',
   fields: ['caption', 'semantic_description'],
   run: () => sql`
@@ -149,7 +169,8 @@ export const migrateAboutTableToLibrary = () =>
   `);
 
 export const migrationForError = (e: any) =>
-  MIGRATIONS.find(({ fields, table = 'photos' }) =>
+  MIGRATIONS.find(({ fields, table = 'photos', missingRelation }) =>
+    (missingRelation && e.message?.includes(`relation "${missingRelation}" does not exist`)) ||
     fields.some(field =>(
       // Seen in write conditions
       new RegExp(`column "${field}" of relation "${table}" does not exist`, 'i').test(e.message) ||

@@ -1,3 +1,4 @@
+import UiText from '@/i18n/UiText';
 import Container from '@/components/Container';
 import AppGrid from '@/components/AppGrid';
 import {
@@ -53,9 +54,7 @@ export default async function PhotosEmptyState() {
                 <Link
                   href={PATH_ADMIN_CONFIGURATION}
                   className="text-main hover:underline"
-                >
-                  /admin/configuration
-                </Link>
+                > <UiText text="/admin/configuration" /> </Link>
               </div>
             </div>}
         </Container>

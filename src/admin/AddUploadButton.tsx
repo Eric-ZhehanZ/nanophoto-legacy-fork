@@ -1,3 +1,4 @@
+import UiText from '@/i18n/UiText';
 import LoaderButton from '@/components/primitives/LoaderButton';
 import { addUploadAction } from '@/photo/actions';
 import {
@@ -57,8 +58,6 @@ export default function AddUploadButton({
       isLoading={isAddingLocal}
       tooltip="Add directly"
       hideText="never"
-    >
-      Add
-    </LoaderButton>
+    > <UiText text="Add" /> </LoaderButton>
   );
 }

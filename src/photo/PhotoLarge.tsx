@@ -1,4 +1,7 @@
 'use client';
+import { useUiText } from '@/i18n/UiText';
+import UiText from '@/i18n/UiText';
+import usePhotoLocalization from './usePhotoLocalization';
 
 import {
   Photo,
@@ -130,6 +133,8 @@ export default function PhotoLarge({
   showAdminKeyCommands?: boolean
   showStorageCheck?: boolean
 }) {
+  const uiText = useUiText();
+  const localize = usePhotoLocalization();
   const ref = useRef<HTMLDivElement>(null);
   const refZoomControls = useRef<ZoomControlsRef>(null);
   const refPhotoRecipe = useRef<HTMLDivElement>(null);
@@ -259,7 +264,7 @@ export default function PhotoLarge({
           className={clsx(arePhotosMatted && 'h-full')}
           classNameImage={clsx(arePhotosMatted &&
             'object-contain w-full h-full')}
-          alt={altTextForPhoto(photo)}
+          alt={altTextForPhoto(localize(photo))}
           src={photo.url}
           aspectRatio={photo.aspectRatio}
           blurDataURL={photo.blurData}
@@ -352,28 +357,28 @@ export default function PhotoLarge({
                   )}>
                     <FieldsetWithStatus
                       id={`edit-title-${photo.id}`}
-                      label="Title"
+                      label={uiText('Title')}
                       value={photoEdit.title}
                       onChange={title => setPhotoEdit?.(
                         photo.id,
                         { title },
                         photoEditOriginal,
                       )}
-                      placeholder="Title"
+                      placeholder={uiText('Title')}
                       hideLabel
                       readOnly={isPerformingUpdate}
                       className="[&_input]:font-bold"
                     />
                     <FieldsetWithStatus
                       id={`edit-caption-${photo.id}`}
-                      label="Caption"
+                      label={uiText('Caption')}
                       value={photoEdit.caption}
                       onChange={caption => setPhotoEdit?.(
                         photo.id,
                         { caption },
                         photoEditOriginal,
                       )}
-                      placeholder="Caption"
+                      placeholder={uiText('Caption')}
                       hideLabel
                       readOnly={isPerformingUpdate}
                     />
@@ -382,9 +387,9 @@ export default function PhotoLarge({
                     ? <h1>{renderPhotoLink}</h1>
                     : renderPhotoLink)}
                 <div className="space-y-baseline">
-                  {!isEditingTitles && photo.caption &&
+                  {!isEditingTitles && localize(photo).caption &&
                     <div className={clsx(UPPERCASE_TITLES && 'uppercase')}>
-                      {photo.caption}
+                      {localize(photo).caption}
                     </div>}
                   {(
                     showCameraContent ||
@@ -476,7 +481,7 @@ export default function PhotoLarge({
                       <li>{photo.isoFormatted}</li>
                       {photo.exposureCompensationFormatted
                         ? <li>{photo.exposureCompensationFormatted}</li>
-                        : ALWAYS_SHOW_EXPOSURE_COMP && <li>0ev</li>}
+                        : ALWAYS_SHOW_EXPOSURE_COMP && <li> <UiText text="0ev" /> </li>}
                     </ul>
                     {showFilmContent && photo.film &&
                       <PhotoFilm
@@ -565,10 +570,10 @@ export default function PhotoLarge({
                           : undefined}
                         prefetch={prefetchRelatedLinks}
                       />}
-                    {ALLOW_PUBLIC_DOWNLOADS && 
-                      <DownloadButton 
+                    {ALLOW_PUBLIC_DOWNLOADS &&
+                      <DownloadButton
                         className="translate-y-[0.5px] md:translate-y-0"
-                        photo={photo} 
+                        photo={photo}
                       />}
                   </div>
                   {showStorageCheck &&

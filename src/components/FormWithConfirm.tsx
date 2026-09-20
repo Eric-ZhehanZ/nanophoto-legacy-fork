@@ -1,10 +1,11 @@
 'use client';
+import { useUiText } from '@/i18n/UiText';
 
 import { ReactNode } from 'react';
 
 export default function FormWithConfirm({
   action,
-  confirmText,
+  confirmText: confirmTextRaw,
   onSubmit,
   className,
   children,
@@ -15,6 +16,8 @@ export default function FormWithConfirm({
   className?: string
   children: ReactNode
 }) {
+  const t = useUiText();
+  const confirmText = typeof confirmTextRaw === 'string' ? t(confirmTextRaw) : confirmTextRaw;
   return (
     <form
       action={action}

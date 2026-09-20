@@ -18,11 +18,10 @@ export default function useStickyNav(
 
   const classNames = useMemo(() => ({
     classNameStickyContainer: clsx(
-      isNavSticky && 'sticky top-0 z-10 pointer-events-none',
-    ),
-    classNameStickyNav: clsx(
+      isNavSticky && 'photo-nav-motion sticky top-0 z-10 pointer-events-none',
       shouldHideStickyNav && 'photo-nav-hidden',
     ),
+    classNameStickyNav: '',
   }), [isNavSticky, shouldHideStickyNav]);
 
   return {

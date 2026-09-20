@@ -1,4 +1,5 @@
 'use client';
+import UiText from '@/i18n/UiText';
 
 import { usePathname, useRouter } from 'next/navigation';
 import { PATH_ADMIN_UPLOADS, pathForAdminUploadUrl } from '@/app/path';
@@ -113,7 +114,7 @@ export default function PhotoUploadWithStatus({
           }}
           onBlobReady={async ({
             blob,
-            extension, 
+            extension,
             hasMultipleUploads,
             isLastBlob,
             abortSignal,
@@ -209,7 +210,7 @@ export default function PhotoUploadWithStatus({
                         {appText.utility.uploading} {fileUploadName}
                       </ResponsiveText>}
                   </>
-                : !showButton && <>Initializing</>}
+                : !showButton && <> <UiText text="Initializing" /> </>}
             </span>}
         </div>
         {!showButton && isUploading && !isFinishing && !uploadError &&
@@ -226,9 +227,7 @@ export default function PhotoUploadWithStatus({
           className="block"
           href={debugDownload.href}
           download={debugDownload.fileName}
-        >
-          Download
-        </a>}
+        > <UiText text="Download" /> </a>}
     </div>
   );
 };

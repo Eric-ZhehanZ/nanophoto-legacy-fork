@@ -1,4 +1,6 @@
 'use client';
+import { useUiText } from '@/i18n/UiText';
+import UiText from '@/i18n/UiText';
 
 import SubmitButtonWithStatus from '@/components/SubmitButtonWithStatus';
 import Link from 'next/link';
@@ -24,6 +26,7 @@ export default function AdminAlbumForm({
   hasLocationServices?: boolean
   children?: ReactNode
 }) {
+  const uiText = useUiText();
   const { invalidateSwr } = useAppState();
 
   const [albumForm, setAlbumForm] = useState<Album>(album);
@@ -48,7 +51,7 @@ export default function AdminAlbumForm({
     <form
       action={updateAlbumAction}
       className="max-w-[38rem] space-y-4"
-    >        
+    >
       {ALBUM_FORM_META
         .map(({ key, label, type, readOnly }) => (
           <FieldsetWithStatus
@@ -77,7 +80,7 @@ export default function AdminAlbumForm({
       {(albumForm.location || isLoadingPlace) &&
         <div className="space-y-4 w-full">
           <FieldsetWithStatus
-            label="Location Display Name"
+            label={uiText('Location Display Name')}
             // eslint-disable-next-line max-len
             value={albumForm.location?.nameFormatted ?? albumForm.location?.name ?? ''}
             onChange={value => setAlbumForm(form => ({
@@ -95,7 +98,7 @@ export default function AdminAlbumForm({
           />
           <FieldsetWithStatus
             id="location"
-            label="Location Data"
+            label={uiText('Location Data')}
             type="textarea"
             value={JSON.stringify(albumForm.location)}
             isModified={!deepEqual(albumForm.location, album.location)}
@@ -109,15 +112,11 @@ export default function AdminAlbumForm({
         <Link
           className="button"
           href={PATH_ADMIN_ALBUMS}
-        >
-          Cancel
-        </Link>
+        > <UiText text="Cancel" /> </Link>
         <SubmitButtonWithStatus
           disabled={!isFormValid}
           onFormSubmit={invalidateSwr}
-        >
-          Update
-        </SubmitButtonWithStatus>
+        > <UiText text="Update" /> </SubmitButtonWithStatus>
       </div>
     </form>
   );

@@ -1,4 +1,5 @@
 'use client';
+import UiText from '@/i18n/UiText';
 
 import LoaderButton from '@/components/primitives/LoaderButton';
 import AppGrid from '@/components/AppGrid';
@@ -61,7 +62,7 @@ export default function AdminEditTitlesPanel() {
             'p-2 rounded-xl',
             'backdrop-blur-lg',
             'text-gray-900! dark:text-gray-100!',
-            'bg-gray-100/90! dark:bg-gray-900/70!',
+            'bg-stone-100/90! dark:bg-stone-900/90!',
             'outline outline-medium',
             'shadow-xl/5',
             '[&>*:first-child]:grow',
@@ -71,13 +72,10 @@ export default function AdminEditTitlesPanel() {
             {modifiedPhotoCount === 0
               ? <>
                 <FaArrowDown />
-                <ResponsiveText shortText="Edit titles">
-                  Edit titles and captions below
-                </ResponsiveText>
+                <ResponsiveText shortText="Edit titles"> <UiText text="Edit titles and captions below" /> </ResponsiveText>
               </>
               : <ResponsiveText shortText={photosText}>
-                {photosText} modified
-              </ResponsiveText>}
+                {photosText} <UiText text="modified" /> </ResponsiveText>}
           </div>
           <LoaderButton
             className="min-h-[2.5rem]"

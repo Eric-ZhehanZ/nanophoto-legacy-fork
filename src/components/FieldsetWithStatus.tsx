@@ -1,4 +1,6 @@
 'use client';
+import { useUiText } from '@/i18n/UiText';
+import UiText from '@/i18n/UiText';
 
 import { InputHTMLAttributes, useRef, RefObject, ReactNode } from 'react';
 import { useFormStatus } from 'react-dom';
@@ -15,10 +17,10 @@ import SelectMenu from './SelectMenu';
 
 export default function FieldsetWithStatus({
   id: _id,
-  label,
+  label: labelRaw,
   icon,
-  note,
-  noteShort,
+  note: noteRaw,
+  noteShort: noteShortRaw,
   noteComplex,
   tooltip,
   error,
@@ -27,7 +29,7 @@ export default function FieldsetWithStatus({
   onChange,
   className,
   selectOptions,
-  selectOptionsDefaultLabel,
+  selectOptionsDefaultLabel: selectOptionsDefaultLabelRaw,
   selectOpenOnLoad,
   tagOptions,
   tagOptionsLimit,
@@ -39,7 +41,7 @@ export default function FieldsetWithStatus({
   tagOptionsAllowNewValues,
   tagOptionsAccessory,
   tagOptionsOnInputTextChange,
-  placeholder,
+  placeholder: placeholderRaw,
   loading,
   required,
   readOnly: readOnlyProp,
@@ -90,6 +92,12 @@ export default function FieldsetWithStatus({
   hideLabel?: boolean
   tabIndex?: number
 }) {
+  const t = useUiText();
+  const label = typeof labelRaw === 'string' ? t(labelRaw) : labelRaw;
+  const note = typeof noteRaw === 'string' ? t(noteRaw) : noteRaw;
+  const noteShort = typeof noteShortRaw === 'string' ? t(noteShortRaw) : noteShortRaw;
+  const placeholder = typeof placeholderRaw === 'string' ? t(placeholderRaw) : placeholderRaw;
+  const selectOptionsDefaultLabel = typeof selectOptionsDefaultLabelRaw === 'string' ? t(selectOptionsDefaultLabelRaw) : selectOptionsDefaultLabelRaw;
   const inputRefInternal = useRef<HTMLInputElement>(null);
 
   const inputRef = inputRefProp ?? inputRefInternal;
@@ -202,9 +210,7 @@ export default function FieldsetWithStatus({
                 {error}
               </span>}
             {required &&
-              <span className="text-gray-400 dark:text-gray-600">
-                Required
-              </span>}
+              <span className="text-gray-400 dark:text-gray-600"> <UiText text="Required" /> </span>}
             {loading && type !== 'checkbox' &&
               <span className="translate-y-[1.5px]">
                 <Spinner />

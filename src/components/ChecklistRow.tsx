@@ -1,3 +1,4 @@
+import UiText from '@/i18n/UiText';
 import { ReactNode } from 'react';
 import { clsx } from 'clsx/lite';
 import StatusIcon from './StatusIcon';
@@ -37,7 +38,7 @@ export default function ChecklistRow({
           'flex flex-wrap items-center gap-2 pb-0.5',
           'font-bold text-main',
         )}>
-          {title}
+          {<UiText>{title}</UiText>}
           {experimental &&
             <ExperimentalBadge className="translate-y-[0.5px]" />}
         </div>

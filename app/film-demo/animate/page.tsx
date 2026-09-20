@@ -1,4 +1,5 @@
 'use client';
+import UiText from '@/i18n/UiText';
 
 import AppGrid from '@/components/AppGrid';
 import { clsx } from 'clsx/lite';
@@ -24,19 +25,17 @@ export default function FilmPage() {
         'flex items-center justify-center min-h-[30rem]',
       )}>
         <div className="w-[250px] scale-[2.5]">
-          <div className="dark:text-gray-500/50 uppercase">
-            Film Simulation:
-          </div>
+          <div className="dark:text-gray-500/50 uppercase"> <UiText text="Film Simulation:" /> </div>
           <PhotoFilm
             film={FUJIFILM_SIMULATION_FORM_INPUT_OPTIONS[index].value}
             type="icon-first"
           />
           <div className="mt-4 text-dim relative">
             <div>
-              <div>35mm 53mm</div>
+              <div> <UiText text="35mm 53mm" /> </div>
               <div>ƒ/1.4</div>
               <div>1/3200s</div>
-              <div>ISO 125</div>
+              <div> <UiText text="ISO 125" /> </div>
             </div>
             <div className={clsx(
               'absolute top-0 left-[-2px] right-0 bottom-0',

@@ -1,4 +1,5 @@
 'use client';
+import { useUiText } from '@/i18n/UiText';
 
 import { ReactNode } from 'react';
 import { clsx } from 'clsx/lite';
@@ -53,6 +54,7 @@ export default function AppViewMenuCompact({
   setIsOpen?: (isOpen: boolean) => void
   className?: string
 }) {
+  const uiText = useUiText();
   const appText = useAppText();
 
   const renderIconGrid = (forMenu?: boolean) => isMasonry
@@ -96,7 +98,7 @@ export default function AppViewMenuCompact({
       label: appText.sort.sort,
       icon: <IconSortNav
         sort={sortConfig.isAscending ? 'asc' : 'desc'}
-        className={clsx(VIEW_ICON_CLASS, 'w-[30px]! -ml-2!')} 
+        className={clsx(VIEW_ICON_CLASS, 'w-[30px]! -ml-2!')}
       />,
       // Sort types are only offered where the nav exposes a full sort menu
       sections: NAV_SORT_CONTROL === 'menu'
@@ -121,7 +123,7 @@ export default function AppViewMenuCompact({
         <MoreMenu
           {...{ isOpen, setIsOpen }}
           sections={[{ items }]}
-          ariaLabel="View Menu"
+          ariaLabel={uiText('View Menu')}
           align="start"
           sideOffset={10}
           alignOffset={-4}

@@ -1,4 +1,5 @@
 'use client';
+import { useUiText } from '@/i18n/UiText';
 
 import {
   useState,
@@ -51,6 +52,7 @@ export default function AppStateProvider({
   areAdminDebugToolsEnabled?: boolean
   isAdminAiModelDebugEnabled?: boolean
 }) {
+  const uiText = useUiText();
   const router = useRouter();
 
   const pathname = usePathname();
@@ -220,7 +222,7 @@ export default function AppStateProvider({
     if (isPathProtected(pathname)) {
       router.push(PATH_ROOT);
     } else {
-      toastSuccess('Signed out');
+      toastSuccess(uiText('Signed out'));
     }
   }, [router, pathname]);
 

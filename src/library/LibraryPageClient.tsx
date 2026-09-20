@@ -1,4 +1,5 @@
 'use client';
+import UiText from '@/i18n/UiText';
 
 import PhotoAlbum from '@/album/PhotoAlbum';
 import { useAppState } from '@/app/AppState';
@@ -208,9 +209,7 @@ export default function LibraryPageClient({
                       icon={<LuCirclePlus size={22} />}
                       includeContainer={false}
                       className="gap-3! p-6!"
-                    >
-                      Add optional description
-                    </AdminEmptyState>
+                    > <UiText text="Add optional description" /> </AdminEmptyState>
                   </Link>}
             <AnimateItems
               className={clsx(

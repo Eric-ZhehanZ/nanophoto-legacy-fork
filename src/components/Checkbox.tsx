@@ -7,8 +7,8 @@ const SIZE = 'size-4.5';
 const BOX_STYLES = clsx(
   'relative',
   'inline-flex items-center justify-center',
-  'rounded-md border ring-blue-600',
-  'group-focus-within:ring group-focus-within:border-blue-600',
+  'rounded-md border ring-stone-600',
+  'group-focus-within:ring group-focus-within:border-stone-600',
   SIZE,
 );
 

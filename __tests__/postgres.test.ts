@@ -1,7 +1,14 @@
 /* eslint-disable max-len */
-import { generateManyToManyValues, getOrderByFromOptions } from '@/db';
+import { generateManyToManyValues, getOrderByFromOptions, getWheresFromOptions } from '@/db';
 
 describe('Postgres', () => {
+  it('correlates bilingual search and tag aliases with the outer photo alias', () => {
+    const { wheres, wheresValues } = getWheresFromOptions({ query: '树木', tag: 'trees' });
+    expect(wheres).toContain('title_zh');
+    expect(wheres.match(/ANY\(p.tags\)/g)).toHaveLength(2);
+    expect(wheres).not.toContain('photos.tags');
+    expect(wheresValues).toEqual(['%树木%', 'trees']);
+  });
   it('orders random photo queries with a stable recency stride', () => {
     expect(getOrderByFromOptions({ sortBy: 'random', limit: 3 }))
       .toBe('ORDER BY (ROW_NUMBER() OVER (ORDER BY taken_at DESC, id) - 1) % 6, taken_at DESC, id');

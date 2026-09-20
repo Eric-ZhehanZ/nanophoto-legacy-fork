@@ -1,3 +1,5 @@
+'use client';
+import { useUiText } from '@/i18n/UiText';
 import clsx from 'clsx/lite';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import MaskedScroll from './MaskedScroll';
@@ -15,7 +17,7 @@ export default function SelectMenu({
   className,
   onChange,
   options,
-  defaultOptionLabel,
+  defaultOptionLabel: defaultOptionLabelRaw,
   tabIndex = 0,
   error,
   readOnly,
@@ -35,6 +37,8 @@ export default function SelectMenu({
   openOnLoad?: boolean
   children?: ReactNode
 }) {
+  const t = useUiText();
+  const defaultOptionLabel = typeof defaultOptionLabelRaw === 'string' ? t(defaultOptionLabelRaw) : defaultOptionLabelRaw;
   const ARIA_ID_SELECT_OPTIONS = `select-options-${name}`;
 
   const ref = useRef<HTMLDivElement>(null);
@@ -158,7 +162,7 @@ export default function SelectMenu({
         className={clsx(
           'cursor-pointer control pl-1.5 py-2',
           'flex items-center w-full h-10',
-          'focus:outline-2 -outline-offset-2 focus:outline-blue-600',
+          'focus:outline-2 -outline-offset-2 focus:outline-stone-600',
           'select-none',
           Boolean(error) && 'error',
           readOnly && 'disabled-select',

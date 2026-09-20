@@ -1,7 +1,7 @@
 'use client';
+import { useTagNames } from '@/i18n/state/client';
 
 import { pathForTag } from '@/app/path';
-import { formatTag } from '.';
 import EntityLink, {
   EntityLinkExternalProps,
 } from '@/components/entity/EntityLink';
@@ -18,13 +18,14 @@ export default function PhotoTag({
   tag: string
   showAdminMenu?: boolean
 } & EntityLinkExternalProps) {
+  const tagName = useTagNames();
   const { getTagCount } = useCategoryCounts();
   const { isUserSignedIn } = useAppState();
   const count = props.hoverCount ?? getTagCount(tag);
   return (
     <EntityLink
       {...props}
-      label={formatTag(tag)}
+      label={tagName(tag)}
       path={pathForTag(tag)}
       hoverQueryOptions={{ tag }}
       icon={<IconTag size={14} className="translate-x-[0.5px]" />}

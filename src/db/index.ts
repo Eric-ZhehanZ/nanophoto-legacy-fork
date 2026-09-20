@@ -106,7 +106,7 @@ export const getWheresFromOptions = (
   }
   if (query) {
     // eslint-disable-next-line max-len
-    wheres.push(`CONCAT(title, ' ', caption, ' ', semantic_description) ILIKE $${valuesIndex++}`);
+    wheres.push(`CONCAT(title, ' ', title_zh, ' ', caption, ' ', caption_zh, ' ', semantic_description, ' ', semantic_description_zh, ' ', (SELECT string_agg(name_en || ' ' || name_zh || ' ' || array_to_string(aliases, ' '), ' ') FROM photo_tags WHERE tag=ANY(p.tags))) ILIKE $${valuesIndex++}`);
     wheresValues.push(`%${query.toLocaleLowerCase()}%`);
   }
   if (maximumAspectRatio) {
@@ -148,7 +148,8 @@ export const getWheresFromOptions = (
     wheresValues.push(album.id);
   }
   if (tag) {
-    wheres.push(`$${valuesIndex++}=ANY(tags)`);
+    const tagIndex = valuesIndex++;
+    wheres.push(`($${tagIndex}=ANY(tags) OR EXISTS (SELECT 1 FROM photo_tags WHERE tag=ANY(p.tags) AND $${tagIndex}=ANY(aliases)))`);
     wheresValues.push(tag);
   }
   if (film) {
@@ -241,7 +242,7 @@ export const getLimitAndOffsetFromOptions = (
 
 export const convertArrayToPostgresString = (
   array?: string[],
-  type: 'braces' | 'brackets' | 'parentheses' = 'braces', 
+  type: 'braces' | 'brackets' | 'parentheses' = 'braces',
 ) => array
   ? type === 'braces'
     ? `{${array.join(',')}}`
@@ -262,7 +263,7 @@ export const generateManyToManyValues = (idsA: string[], idsB: string[]) => {
     `($${index * 2 + 1},$${index * 2 + 2})`).join(',');
 
   const values = pairs.flat();
-  
+
   return {
     valueString,
     values,

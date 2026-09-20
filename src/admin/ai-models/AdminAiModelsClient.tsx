@@ -1,4 +1,6 @@
 'use client';
+import { useUiText } from '@/i18n/UiText';
+import UiText from '@/i18n/UiText';
 
 import {
   Fragment,
@@ -83,9 +85,7 @@ const renderColorTitleCaption = ({
     return <span className={clsx(
       'flex w-full h-full justify-center items-center',
       'text-dim text-xl',
-    )}>
-      &mdash;
-    </span>;
+    )}> <UiText text="&mdash;" /> </span>;
   }
 
   return <>
@@ -118,6 +118,7 @@ export default function AdminAiModelsClient({
   photos: Photo[]
   hasOpenAiSecretKey: boolean
 }) {
+  const uiText = useUiText();
   const [columnModels, setColumnModels] =
     useState<OpenAIModel[]>(AI_MODEL_COLUMNS_DEFAULT);
 
@@ -270,7 +271,7 @@ export default function AdminAiModelsClient({
         onClick={() => generateColumn(column)}
         isLoading={isColumnGenerating(column)}
         disabled={isShuffling || isGeneratingAll}
-        tooltip="Generate this column for all photos"
+        tooltip={uiText('Generate this column for all photos')}
         className="h-full px-2"
       />
     </div>;
@@ -314,9 +315,7 @@ export default function AdminAiModelsClient({
     <AppGrid
       contentMain={<div className="space-y-4">
         {!hasOpenAiSecretKey &&
-          <WarningNote>
-            Comparisons address OpenAI directly, which requires
-            {' '}
+          <WarningNote> <UiText text="Comparisons address OpenAI directly, which requires" /> {' '}
             <EnvVar variable="OPENAI_SECRET_KEY" />
           </WarningNote>}
         <div>
@@ -333,7 +332,7 @@ export default function AdminAiModelsClient({
                 onClick={() => startShuffling(() => router.refresh())}
                 isLoading={isShuffling}
                 disabled={isBusy}
-                tooltip="Shuffle photos"
+                tooltip={uiText('Shuffle photos')}
                 className="h-full"
               />
               {allColumns.map(renderColumnHeader)}
@@ -346,7 +345,7 @@ export default function AdminAiModelsClient({
                   onClick={generateAll}
                   isLoading={isGeneratingAll}
                   disabled={isShuffling || isBusy}
-                  tooltip="Generate every row"
+                  tooltip={uiText('Generate every row')}
                   className={CLASS_BUTTON_SIDEBAR}
                   primary
                 />
@@ -381,7 +380,7 @@ export default function AdminAiModelsClient({
                   onClick={() => generateRow(photo.id)}
                   isLoading={isRowGenerating(photo.id)}
                   disabled={isShuffling || isGeneratingAll}
-                  tooltip="Generate this row"
+                  tooltip={uiText('Generate this row')}
                   className={CLASS_BUTTON_SIDEBAR}
                 />
               </div>

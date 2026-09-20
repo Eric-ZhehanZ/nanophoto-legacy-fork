@@ -1,3 +1,5 @@
+'use client';
+import usePhotoLocalization from './usePhotoLocalization';
 import ImageMedium from '@/components/image/ImageMedium';
 import { altTextForPhoto, Photo } from '.';
 import clsx from 'clsx/lite';
@@ -12,6 +14,7 @@ export default function PhotoAvatar({
   className?: string
   placeholder?: ReactNode
 }) {
+  const localize = usePhotoLocalization();
   return (
     <span className={clsx(
       'inline-block',
@@ -23,7 +26,7 @@ export default function PhotoAvatar({
         ? <ImageMedium
           src={photo.url}
           className="object-cover w-full h-full"
-          alt={altTextForPhoto(photo)}
+          alt={altTextForPhoto(localize(photo))}
           blurDataURL={photo.blurData}
           aspectRatio={photo.aspectRatio}
         />

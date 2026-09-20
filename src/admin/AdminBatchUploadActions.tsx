@@ -1,4 +1,6 @@
 'use client';
+import { useUiText } from '@/i18n/UiText';
+import UiText from '@/i18n/UiText';
 
 import ErrorNote from '@/components/ErrorNote';
 import FieldsetWithStatus from '@/components/FieldsetWithStatus';
@@ -53,6 +55,7 @@ export default function AdminBatchUploadActions({
   setIsDeleting: Dispatch<SetStateAction<boolean>>
   onBatchActionComplete?: () => Promise<void>
 }) {
+  const uiText = useUiText();
   const { updateAdminData } = useAppState();
 
   const [showBulkSettings, setShowBulkSettings] = useState(false);
@@ -143,7 +146,7 @@ export default function AdminBatchUploadActions({
                 : `Found ${pluralize(uploadUrls.length, 'upload')}`}
             </div>
             <FieldsetWithStatus
-              label="Apply to All"
+              label={uiText('Apply to All')}
               type="checkbox"
               value={showBulkSettings ? 'true' : 'false'}
               onChange={value => setShowBulkSettings(value === 'true')}
@@ -160,7 +163,7 @@ export default function AdminBatchUploadActions({
                 className="relative z-11"
               />
               <FieldsetTag
-                label="Tags"
+                label={uiText('Tags')}
                 tags={formData.tags ?? ''}
                 tagOptions={uniqueTags}
                 onChange={tags => setFormData(data => ({ ...data, tags }))}
@@ -253,9 +256,7 @@ export default function AdminBatchUploadActions({
               shouldRedirectToAdminPhotos
               hideText="never"
               disabled={isAdding}
-            >
-              Delete All Uploads
-            </DeleteUploadButton>
+            > <UiText text="Delete All Uploads" /> </DeleteUploadButton>
           </div>
         </div>
       </Container>

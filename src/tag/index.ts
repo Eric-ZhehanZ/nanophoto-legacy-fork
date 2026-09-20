@@ -22,7 +22,7 @@ import { AppTextState } from '@/i18n/state';
 export const TAG_FAVS     = 'favs';
 export const TAG_PRIVATE  = 'private';
 
-type TagWithMeta = { tag: string } & CategoryQueryMeta;
+type TagWithMeta = { tag: string; nameEn?: string; nameZh?: string; aliases?: string[] } & CategoryQueryMeta;
 
 export type Tags = TagWithMeta[]
 
@@ -174,8 +174,10 @@ export const convertTagsForForm = (
   appText: AppTextState,
 ) =>
   sortTagsObjectWithoutFavs(tags)
-    .map(({ tag, count }) => ({
+    .map(({ tag, count, nameEn, nameZh, aliases }) => ({
       value: tag,
+      label: [nameEn || formatTag(tag), nameZh].filter(Boolean).join(' / '),
+      searchTerms: aliases?.join(' '),
       annotation: formatCount(count),
       annotationAria:
         formatCountDescriptive(count, appText.category.taggedPhotos),

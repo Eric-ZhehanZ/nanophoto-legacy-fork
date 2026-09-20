@@ -1,4 +1,5 @@
 'use client';
+import { useUiText } from '@/i18n/UiText';
 
 import AdminChildPage from '@/components/AdminChildPage';
 import { Photo } from '.';
@@ -43,6 +44,7 @@ export default function PhotoEditPageClient({
   blurData: string
   hasLocationServices?: boolean
 }) {
+  const uiText = useUiText();
   const photoForm = convertPhotoToFormData(photo);
 
   const {
@@ -64,7 +66,7 @@ export default function PhotoEditPageClient({
   return (
     <AdminChildPage
       backPath={PATH_ADMIN_PHOTOS}
-      backLabel="Photos"
+      backLabel={uiText('Photos')}
       breadcrumb={pending && updatedTitle
         ? updatedTitle
         : photo.title || photo.id}

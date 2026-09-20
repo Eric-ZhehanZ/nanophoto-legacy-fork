@@ -1,4 +1,5 @@
 'use client';
+import UiText from '@/i18n/UiText';
 
 import HttpStatusPage from '@/components/HttpStatusPage';
 import { clsx } from 'clsx/lite';
@@ -15,8 +16,6 @@ export default function NotFound() {
       )}>
         {pathname}
       </span>
-      {' '}
-      could not be found
-    </HttpStatusPage>
+      {' '} <UiText text="could not be found" /> </HttpStatusPage>
   );
 }

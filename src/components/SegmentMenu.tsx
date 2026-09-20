@@ -1,3 +1,4 @@
+import UiText from '@/i18n/UiText';
 import clsx from 'clsx/lite';
 import { ReactNode } from 'react';
 import Spinner from './Spinner';
@@ -47,7 +48,7 @@ export default function SegmentMenu<T extends string>({
               : <span className={clsx(
                 'text-sm font-medium uppercase tracking-wider',
               )}>
-                {value}
+                {<UiText>{value}</UiText>}
               </span>}
         </button>
       ))}

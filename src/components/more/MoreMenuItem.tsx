@@ -1,4 +1,5 @@
 'use client';
+import UiText, { useUiText } from '@/i18n/UiText';
 
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { clsx } from 'clsx/lite';
@@ -21,12 +22,12 @@ export const renderMenuItemCheck = (isChecked: boolean) => isChecked
 export const renderMenuItemLabel = (label: string, isSelected: boolean) => ({
   label,
   labelComplex: <span className={clsx(!isSelected && 'text-dim')}>
-    {label}
+    <UiText>{label}</UiText>
   </span>,
 });
 
 export default function MoreMenuItem({
-  label,
+  label: labelRaw,
   labelComplex,
   annotation,
   icon,
@@ -56,6 +57,8 @@ export default function MoreMenuItem({
   keyCommand?: string
   keyCommandModifier?: ComponentProps<typeof KeyCommand>['modifier']
 }) {
+  const t = useUiText();
+  const label = typeof labelRaw === 'string' ? t(labelRaw) : labelRaw;
   const [isLoading, setIsLoading] = useState(false);
 
   const getColorClasses = () => {

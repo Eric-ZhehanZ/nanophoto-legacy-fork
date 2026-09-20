@@ -1,4 +1,6 @@
 'use client';
+import { useUiText } from '@/i18n/UiText';
+import UiText from '@/i18n/UiText';
 
 import ScoreCard from '@/components/ScoreCard';
 import ScoreCardRow from '@/components/ScoreCardRow';
@@ -64,8 +66,7 @@ const TEXT_COLOR_WARNING  = 'text-amber-600 dark:text-amber-500';
 const TEXT_COLOR_BLUE     = 'text-blue-600 dark:text-blue-500';
 
 const readmeAnchor = (anchor: string) =>
-  <AdminLink href={`${TEMPLATE_REPO_URL_README}#${anchor}`}>
-    README/{anchor}
+  <AdminLink href={`${TEMPLATE_REPO_URL_README}#${anchor}`}> <UiText text="README/" /> {anchor}
   </AdminLink>;
 
 const renderLabeledEnvVar = (
@@ -145,6 +146,7 @@ export default function AdminAppInsightsClient({
   usedDeprecatedEnvVars: typeof USED_DEPRECATED_ENV_VARS
   photoStats: PhotoStats
 }) {
+  const uiText = useUiText();
   const { shouldDebugInsights: debug } = useAppState();
 
   const {
@@ -183,7 +185,7 @@ export default function AdminAppInsightsClient({
   return (
     <ScoreCardContainer>
       {(codeMeta || debug) && <>
-        <ScoreCard title="Source code">
+        <ScoreCard title={uiText('Source code')}>
           {(codeMeta?.didError || debug) &&
             <ScoreCardRow
               icon={<IoSyncCircle
@@ -191,7 +193,7 @@ export default function AdminAppInsightsClient({
                 className={TEXT_COLOR_WARNING}
               />}
               content={<>
-                <span>Could not analyze source code</span>
+                <span> <UiText text="Could not analyze source code" /> </span>
                 {renderTooltipContent(
                   'Could not connect to GitHub API. Try refreshing.',
                 )}
@@ -199,20 +201,14 @@ export default function AdminAppInsightsClient({
             />}
           {((!codeMeta?.didError && noFork) || debug) &&
             <ScoreCardRow
-              icon={<FaCircleInfo 
+              icon={<FaCircleInfo
                 size={15}
                 className="text-blue-500 translate-y-[1px]"
               />}
               content="This template is not forked"
               expandContent={<>
-                <AdminLink href={TEMPLATE_REPO_URL_FORK}>
-                  Fork original template
-                </AdminLink>
-                {' '}
-                to receive the latest fixes and features.
-                {' '}
-                Additional instructions in
-                {' '}
+                <AdminLink href={TEMPLATE_REPO_URL_FORK}> <UiText text="Fork original template" /> </AdminLink>
+                {' '} <UiText text="to receive the latest fixes and features." /> {' '} <UiText text="Additional instructions in" /> {' '}
                 {readmeAnchor('receiving-updates')}.
               </>}
             />}
@@ -221,23 +217,15 @@ export default function AdminAppInsightsClient({
               size={18}
               className="text-blue-500"
             />}
-            content={<>
-              This fork is
-              {' '}
+            content={<> <UiText text="This fork is" /> {' '}
               {renderHighlightText(
                 pluralize(codeMeta?.behindBy ?? DEBUG_BEHIND_BY, 'commit'),
                 'blue',
               )}
-              {' '}
-              behind
-            </>}
+              {' '} <UiText text="behind" /> </>}
             expandContent={<>
-              <AdminLink href={codeMeta?.urlRepo ?? ''}>
-                Sync your fork
-              </AdminLink>
-              {' '}
-              to receive the latest fixes and features.
-            </>}
+              <AdminLink href={codeMeta?.urlRepo ?? ''}> <UiText text="Sync your fork" /> </AdminLink>
+              {' '} <UiText text="to receive the latest fixes and features." /> </>}
           />}
           <ScoreCardRow
             icon={<BiLogoGithub size={17} />}
@@ -308,8 +296,7 @@ export default function AdminAppInsightsClient({
                 // eslint-disable-next-line max-len
                 href={`https://github.com/vercel/next.js/releases/tag/v${nextVersion}`}
                 target="blank"
-              >
-                Next.js {nextVersion}              
+              > <UiText text="Next.js" /> {nextVersion}
               </Link>
               {' '}
               <Link
@@ -317,8 +304,7 @@ export default function AdminAppInsightsClient({
                 href={`https://github.com/facebook/react/releases/tag/v${reactVersion}`}
                 className="text-dim hover:text-medium active:text-dim"
                 target="blank"
-              >
-                (React {reactVersion})
+              > <UiText text="(React" /> {reactVersion})
               </Link>
             </>}
           />
@@ -328,13 +314,12 @@ export default function AdminAppInsightsClient({
               // eslint-disable-next-line max-len
               href={`https://github.com/nodejs/node/releases/tag/v${nodeVersion}`}
               target="blank"
-            >
-              Node.js {nodeVersion}          
+            > <UiText text="Node.js" /> {nodeVersion}
             </Link>}
           />}
         </ScoreCard>
       </>}
-      <ScoreCard title="Template recommendations">
+      <ScoreCard title={uiText('Template recommendations')}>
         {(hasTemplateRecommendations(insights) || debug)
           ? <>
             {(deprecatedEnvVars || debug) && <ScoreCardRow
@@ -344,34 +329,31 @@ export default function AdminAppInsightsClient({
                 'yellow',
                 !isExpanded,
               )}
-              expandContent={<div className="flex flex-col gap-2">
-                Future versions of this template may not build correctly
-                with the following deprecated environment variables:
-                <div className="space-y-1">
-                  {usedDeprecatedEnvVars.map(({ old, replacement }) => (
-                    <MaskedScroll
-                      key={old}
-                      className={clsx(
-                        'inline-flex items-center gap-3',
-                        'overflow-y-hidden',
-                      )}
-                      direction="horizontal"
-                    >
-                      <div className={clsx(
-                        'inline-flex items-center gap-1.5',
-                        'text-xs font-medium',
-                      )}>
-                        {renderWarningIconSmall}
-                        {old}
-                      </div>
-                      <FaArrowRight
-                        size={11}
-                        className="shrink-0 text-extra-dim"
-                      />
-                      <EnvVar variable={replacement} maskScroll={false} />
-                    </MaskedScroll>
-                  ))}
-                </div>
+              expandContent={<div className="flex flex-col gap-2"> <UiText text="Future versions of this template may not build correctly with the following deprecated environment variables:" /> <div className="space-y-1">
+                {usedDeprecatedEnvVars.map(({ old, replacement }) => (
+                  <MaskedScroll
+                    key={old}
+                    className={clsx(
+                      'inline-flex items-center gap-3',
+                      'overflow-y-hidden',
+                    )}
+                    direction="horizontal"
+                  >
+                    <div className={clsx(
+                      'inline-flex items-center gap-1.5',
+                      'text-xs font-medium',
+                    )}>
+                      {renderWarningIconSmall}
+                      {old}
+                    </div>
+                    <FaArrowRight
+                      size={11}
+                      className="shrink-0 text-extra-dim"
+                    />
+                    <EnvVar variable={replacement} maskScroll={false} />
+                  </MaskedScroll>
+                ))}
+              </div>
               </div>}
             />}
             {(noRateLimiting || debug) && <ScoreCardRow
@@ -381,11 +363,7 @@ export default function AdminAppInsightsClient({
                 'yellow',
                 !isExpanded,
               )}
-              expandContent={<>
-                Create Upstash Redis store from storage tab on
-                Vercel dashboard and link to this project to
-                prevent unexpected usage by enabling rate limiting.
-              </>}
+              expandContent={<> <UiText text="Create Upstash Redis store from storage tab on Vercel dashboard and link to this project to prevent unexpected usage by enabling rate limiting." /> </>}
             />}
             {(noConfiguredDomain || debug) && <ScoreCardRow
               icon={renderWarningIconLarge}
@@ -394,10 +372,7 @@ export default function AdminAppInsightsClient({
                 'yellow',
                 !isExpanded,
               )}
-              expandContent={<>
-                Not setting an explicit domain may cause certain features
-                to behave unexpectedly. Domains are stored in
-                {' '}
+              expandContent={<> <UiText text="Not setting an explicit domain may cause certain features to behave unexpectedly. Domains are stored in" /> {' '}
                 <EnvVar
                   variable="NEXT_PUBLIC_DOMAIN"
                   trailingContent="."
@@ -414,10 +389,7 @@ export default function AdminAppInsightsClient({
                 className="translate-x-[1px] translate-y-[-1px]"
               />}
               content="Configure meta"
-              expandContent={<>
-                Configure site title (visible in search results and browser tab)
-                and site description (visible in search results):
-                {' '}
+              expandContent={<> <UiText text="Configure site title (visible in search results and browser tab) and site description (visible in search results):" /> {' '}
                 <div className="flex flex-col gap-y-4 mt-3">
                   {(
                     noConfiguredMetaTitle ||
@@ -442,49 +414,39 @@ export default function AdminAppInsightsClient({
                 className="translate-x-[1px] translate-y-[-1.5px]"
               />}
               content="Speed up page load times"
-              expandContent={<>
-                Improve load times by enabling static optimization:
-                <div className="flex flex-col gap-y-4 mt-3">
-                  {renderLabeledEnvVar(
-                    'Photo pages',
-                    'NEXT_PUBLIC_STATICALLY_OPTIMIZE_PHOTOS',
-                    '1',
-                  )}
-                  {renderLabeledEnvVar(
-                    'Photo OG images',
-                    'NEXT_PUBLIC_STATICALLY_OPTIMIZE_PHOTO_OG_IMAGES',
-                    '1',
-                  )}
-                  {renderLabeledEnvVar(
-                    'Category pages (tags, cameras, etc.)',
-                    'NEXT_PUBLIC_STATICALLY_OPTIMIZE_PHOTO_CATEGORIES',
-                    '1',
-                  )}
-                  {renderLabeledEnvVar(
-                    'Category OG images',
-                    'NEXT_PUBLIC_STATICALLY_OPTIMIZE_PHOTO_CATEGORY_OG_IMAGES',
-                    '1',
-                  )}
-                  <span>
-                    See {readmeAnchor('performance')} for cost implications.
-                  </span>
-                </div>
+              expandContent={<> <UiText text="Improve load times by enabling static optimization:" /> <div className="flex flex-col gap-y-4 mt-3">
+                {renderLabeledEnvVar(
+                  'Photo pages',
+                  'NEXT_PUBLIC_STATICALLY_OPTIMIZE_PHOTOS',
+                  '1',
+                )}
+                {renderLabeledEnvVar(
+                  'Photo OG images',
+                  'NEXT_PUBLIC_STATICALLY_OPTIMIZE_PHOTO_OG_IMAGES',
+                  '1',
+                )}
+                {renderLabeledEnvVar(
+                  'Category pages (tags, cameras, etc.)',
+                  'NEXT_PUBLIC_STATICALLY_OPTIMIZE_PHOTO_CATEGORIES',
+                  '1',
+                )}
+                {renderLabeledEnvVar(
+                  'Category OG images',
+                  'NEXT_PUBLIC_STATICALLY_OPTIMIZE_PHOTO_CATEGORY_OG_IMAGES',
+                  '1',
+                )}
+                <span> <UiText text="See" /> {readmeAnchor('performance')} <UiText text="for cost implications." /> </span>
+              </div>
               </>}
             />}
             {(noAi || debug) && <ScoreCardRow
               icon={<TbSparkles size={17} />}
               content="Improve SEO + accessibility with AI"
-              expandContent={<>
-                Enable automatic AI text generation via
-                {' '}
+              expandContent={<> <UiText text="Enable automatic AI text generation via" /> {' '}
                 <EnvVar variable="AI_GATEWAY_MODEL" trailingContent="," />
-                {' '}
-                (recommended on Vercel, no API key needed) or
-                {' '}
+                {' '} <UiText text="(recommended on Vercel, no API key needed) or" /> {' '}
                 <EnvVar variable="OPENAI_SECRET_KEY" trailingContent="." />
-                {' '}
-                Further instruction and cost considerations in
-                {' '}
+                {' '} <UiText text="Further instruction and cost considerations in" /> {' '}
                 {readmeAnchor('ai-text-generation')}.
               </>}
             />}
@@ -494,11 +456,7 @@ export default function AdminAppInsightsClient({
                 className="rotate-90 translate-x-[-1px]"
               />}
               content="Vertical photos may benefit from matting"
-              expandContent={<>
-                Enable photo matting to make
-                {' '}
-                portrait and landscape photos appear more consistent
-                {' '}
+              expandContent={<> <UiText text="Enable photo matting to make" /> {' '} <UiText text="portrait and landscape photos appear more consistent" /> {' '}
                 <EnvVar
                   variable="NEXT_PUBLIC_MATTE_PHOTOS"
                   value="1"
@@ -509,11 +467,7 @@ export default function AdminAppInsightsClient({
             {(gridFirst || debug) && <ScoreCardRow
               icon={<IoMdGrid size={18} className="translate-y-[-1px]" />}
               content="Grid homepage"
-              expandContent={<>
-                Now that you have enough photos, consider switching your
-                {' '}
-                default view to grid by setting
-                {' '}
+              expandContent={<> <UiText text="Now that you have enough photos, consider switching your" /> {' '} <UiText text="default view to grid by setting" /> {' '}
                 <EnvVar
                   variable="NEXT_PUBLIC_GRID_HOMEPAGE"
                   value="1"
@@ -525,11 +479,9 @@ export default function AdminAppInsightsClient({
           : <AdminEmptyState
             icon={<IoCheckmarkCircleOutline />}
             includeContainer={false}
-          >
-            No recommendations found
-          </AdminEmptyState>}
+          > <UiText text="No recommendations found" /> </AdminEmptyState>}
       </ScoreCard>
-      <ScoreCard title="Library Stats">
+      <ScoreCard title={uiText('Library Stats')}>
         {(photosNeedSync || debug) && <ScoreCardRow
           icon={<LiaBroomSolid
             size={19}
@@ -546,11 +498,7 @@ export default function AdminAppInsightsClient({
               ),
               'blue',
             )}
-            {' '}
-            with updates
-            {renderTooltipContent(<>
-              Missing data or AI&#8209;generated text
-            </>)}
+            {' '} <UiText text="with updates" /> {renderTooltipContent(<> <UiText text="Missing data or AI&#8209;generated text" /> </>)}
           </>}
           expandPath={PATH_ADMIN_PHOTOS_UPDATES}
         />}

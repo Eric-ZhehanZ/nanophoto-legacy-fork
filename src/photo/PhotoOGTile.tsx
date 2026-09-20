@@ -1,4 +1,5 @@
 'use client';
+import usePhotoLocalization from './usePhotoLocalization';
 
 import {
   Photo,
@@ -18,10 +19,11 @@ export default function PhotoOGTile({
 }: {
   photo: Photo
 } & PhotoSetCategory & OGTilePropsCore) {
+  const localize = usePhotoLocalization();
   return (
     <OGTile {...{
-      title: titleForPhoto(photo),
-      description: descriptionForPhoto(photo),
+      title: titleForPhoto(localize(photo)),
+      description: descriptionForPhoto(localize(photo)),
       path: pathForPhoto({ photo, ...categories }),
       pathImage: pathForPhotoImage(photo),
       riseOnHover,

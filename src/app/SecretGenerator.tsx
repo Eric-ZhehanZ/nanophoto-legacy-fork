@@ -1,4 +1,5 @@
 'use client';
+import { useUiText } from '@/i18n/UiText';
 
 import { clsx } from 'clsx/lite';
 import Container from '@/components/Container';
@@ -13,6 +14,7 @@ export default function SecretGenerator({
 }: {
   secret: string
 }) {
+  const uiText = useUiText();
   const [isLoading, setIsLoading] = useState(false);
   const [secret, setSecret] = useState(secretFromProps);
 
@@ -31,7 +33,7 @@ export default function SecretGenerator({
         )}>
           {secret ? <span>{secret}</span> : <Spinner />}
           <div className="flex items-center gap-0.5 translate-y-[-0.5px]">
-            <CopyButton label="Secret" text={secret} />
+            <CopyButton label={uiText('Secret')} text={secret} />
           </div>
         </div>
       </Container>

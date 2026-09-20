@@ -1,3 +1,4 @@
+import UiText from '@/i18n/UiText';
 import { pathForPhoto } from '@/app/path';
 import LinkWithStatus from '@/components/LinkWithStatus';
 import { Photo } from '@/photo';
@@ -26,13 +27,12 @@ export default async function AdminStoragePage() {
 
   return (
     <div className="w-full space-y-4">
-      <div className="font-bold">
-        Storage ({countComplete + countPartial}/{urls.length})
+      <div className="font-bold"> <UiText text="Storage (" /> {countComplete + countPartial}/{urls.length})
       </div>
       <div>
-        <div>✅ {countComplete.toString().padStart(3, '0')} Complete</div>
-        <div>⚠️ {countPartial.toString().padStart(3, '0')} Partial</div>
-        <div>❌ {countMissing.toString().padStart(3, '0')} Missing</div>
+        <div>✅ {countComplete.toString().padStart(3, '0')} <UiText text="Complete" /> </div>
+        <div>⚠️ {countPartial.toString().padStart(3, '0')} <UiText text="Partial" /> </div>
+        <div>❌ {countMissing.toString().padStart(3, '0')} <UiText text="Missing" /> </div>
       </div>
       <div>
         {urls.map(({ id, title, hidden, status }) => (

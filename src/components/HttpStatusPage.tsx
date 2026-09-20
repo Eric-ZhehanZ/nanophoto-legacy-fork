@@ -1,3 +1,4 @@
+import UiText from '@/i18n/UiText';
 import { ReactNode } from 'react';
 import AppGrid from './AppGrid';
 import { clsx } from 'clsx/lite';
@@ -29,9 +30,7 @@ export default function HttpStatusPage({
           <Link
             href={PATH_ROOT}
             className="text-main"
-          >
-            Return Home
-          </Link>
+          > <UiText text="Return Home" /> </Link>
         </div>
       </div>
     } />

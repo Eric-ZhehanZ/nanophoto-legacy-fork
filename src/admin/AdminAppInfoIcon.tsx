@@ -1,3 +1,4 @@
+import { useUiText } from '@/i18n/UiText';
 import { useAppState } from '@/app/AppState';
 import clsx from 'clsx/lite';
 import { LuCog } from 'react-icons/lu';
@@ -10,6 +11,7 @@ export default function AdminAppInfoIcon({
   size?: 'small' | 'large'
   className?: string
 }) {
+  const uiText = useUiText();
   const { insightsIndicatorStatus } = useAppState();
 
   return (
@@ -20,7 +22,7 @@ export default function AdminAppInfoIcon({
       <LuCog
         size={size === 'large' ? 20 : 17}
         className="inline-flex translate-y-[1px]"
-        aria-label="App Info"
+        aria-label={uiText("App Info")}
       />
       {insightsIndicatorStatus &&
         <InsightsIndicatorDot

@@ -1,3 +1,4 @@
+import { getTagCatalog } from '@/tag/catalog-server';
 import AdminChildPage from '@/components/AdminChildPage';
 import { redirect } from 'next/navigation';
 import { getPhotosCached, getPhotosMetaCached } from '@/photo/cache';
@@ -18,7 +19,8 @@ export default async function TagPageEdit({
   const { tag: tagFromParams } = await params;
 
   const tag = decodeURIComponent(tagFromParams);
-  
+  const catalog = await getTagCatalog();
+
   const [
     { count },
     photos,
@@ -27,7 +29,7 @@ export default async function TagPageEdit({
     getPhotosCached({ tag, limit: MAX_PHOTO_TO_SHOW, hidden: 'include' }),
   ]);
 
-  if (count === 0) { redirect(PATH_ADMIN); }
+  if (count === 0 && !catalog.some(t => t.tag === tag)) { redirect(PATH_ADMIN); }
 
   return (
     <AdminChildPage
@@ -35,7 +37,7 @@ export default async function TagPageEdit({
       backLabel="Tags"
       breadcrumb={<AdminTagBadge {...{ tag, count, hideBadge: true }} />}
     >
-      <AdminTagForm {...{ tag }}>
+      <AdminTagForm {...{ tag, catalog }}>
         <PhotoLightbox
           {...{ count, photos, tag }}
           maxPhotosToShow={MAX_PHOTO_TO_SHOW}

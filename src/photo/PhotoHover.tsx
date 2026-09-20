@@ -1,4 +1,5 @@
 'use client';
+import usePhotoLocalization from './usePhotoLocalization';
 
 import { ComponentProps, ReactNode, useMemo } from 'react';
 import EntityHover from '@/components/entity/EntityHover';
@@ -26,17 +27,18 @@ export default function PhotoHover({
   className?: string
   color?: ComponentProps<typeof SharedHover>['color']
 }) {
+  const localize = usePhotoLocalization();
   const hoverKey = pathForPhoto({ photo });
   const exifText = ogCaptionForPhoto(photo);
   const showExif = shouldShowExifDataForPhoto(photo) && Boolean(exifText);
-  const captionText = photo.title
-    ? photo.title
+  const captionText = localize(photo).title
+    ? localize(photo).title
     : (photo.takenAt || photo.createdAt)
       ? formatDate({
         date: photo.takenAt || photo.createdAt,
         length: 'medium',
       }).toLocaleUpperCase()
-      : titleForPhoto(photo, false);
+      : titleForPhoto(localize(photo), false);
 
   const photos = useMemo(() => [photo], [photo]);
 

@@ -1,4 +1,6 @@
 'use client';
+import UiText from '@/i18n/UiText';
+import { useTagNames } from '@/i18n/state/client';
 
 import { Command } from 'cmdk';
 import {
@@ -62,7 +64,6 @@ import PhotoDate from '@/photo/PhotoDate';
 import PhotoSmall from '@/photo/PhotoSmall';
 import {
   addPrivateToTags,
-  formatTag,
   isTagFavs,
   isTagPrivate,
   limitTagsByCount,
@@ -168,6 +169,7 @@ export default function CommandKClient({
 }: {
   footer?: string
 } & PhotoSetCategories) {
+  const tagName = useTagNames();
   const pathname = usePathname();
 
   const appText = useAppText();
@@ -255,7 +257,7 @@ export default function CommandKClient({
     updateMaskOnEvents: false,
     hideScrollbar: false,
   });
-  
+
   // Manage action/path waiting state
   const [keyWaiting, setKeyWaiting] = useState<string>();
   const [isPending, startTransition] = useTransition();
@@ -448,9 +450,9 @@ export default function CommandKClient({
               className="translate-x-[1px] translate-y-[0.75px]"
             />,
             items: tags.map(({ tag, count }) => ({
-              explicitKey: formatTag(tag),
+              explicitKey: tagName(tag),
               label: <span className="flex items-center gap-[7px]">
-                {formatTag(tag)}
+                {tagName(tag)}
                 {isTagFavs(tag) &&
                   <IconFavs
                     size={13}
@@ -512,6 +514,7 @@ export default function CommandKClient({
     lenses,
     albums,
     tags,
+    tagName,
     recipes,
     films,
     focalLengths,
@@ -878,9 +881,7 @@ export default function CommandKClient({
                     <span className="sm:hidden">
                       <IoClose size={17} className="text-dim" />
                     </span>
-                    <span className="max-sm:hidden mx-0.5">
-                      ESC
-                    </span>
+                    <span className="max-sm:hidden mx-0.5"> <UiText text="ESC" /> </span>
                   </>}
               </LoaderButton>
             </span>}

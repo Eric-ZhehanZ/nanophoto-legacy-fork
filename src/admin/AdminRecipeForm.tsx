@@ -1,4 +1,6 @@
 'use client';
+import { useUiText } from '@/i18n/UiText';
+import UiText from '@/i18n/UiText';
 
 import SubmitButtonWithStatus from '@/components/SubmitButtonWithStatus';
 import Link from 'next/link';
@@ -16,6 +18,7 @@ export default function AdminRecipeForm({
   recipe: string
   children?: ReactNode
 }) {
+  const uiText = useUiText();
   const { invalidateSwr } = useAppState();
 
   const [updatedRecipeRaw, setUpdatedRecipeRaw] = useState(recipe);
@@ -35,7 +38,7 @@ export default function AdminRecipeForm({
       className="space-y-8"
     >
       <FieldsetWithStatus
-        label="New Recipe Name"
+        label={uiText('New Recipe Name')}
         value={updatedRecipeRaw}
         onChange={setUpdatedRecipeRaw}
       />
@@ -58,15 +61,11 @@ export default function AdminRecipeForm({
         <Link
           className="button"
           href={PATH_ADMIN_RECIPES}
-        >
-          Cancel
-        </Link>
+        > <UiText text="Cancel" /> </Link>
         <SubmitButtonWithStatus
           disabled={!isFormValid}
           onFormSubmit={invalidateSwr}
-        >
-          Update
-        </SubmitButtonWithStatus>
+        > <UiText text="Update" /> </SubmitButtonWithStatus>
       </div>
     </form>
   );

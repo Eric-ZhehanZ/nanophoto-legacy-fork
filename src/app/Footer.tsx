@@ -1,4 +1,5 @@
 'use client';
+import UiText from '@/i18n/UiText';
 
 import { clsx } from 'clsx/lite';
 import AppGrid from '../components/AppGrid';
@@ -48,7 +49,7 @@ export default function Footer() {
                 'flex gap-x-3 xs:gap-x-4 grow flex-wrap',
                 'w-full min-w-0',
               )}>
-                <a href="https://zhehanz.com/" className="hover:text-stone-900 dark:hover:text-stone-100">↖ ZhehanZ</a>
+                <a href="https://zhehanz.com/" className="hover:text-stone-900 dark:hover:text-stone-100"> <UiText text="↖ ZhehanZ" /> </a>
                 {userEmail || userEmailEager
                   ? <>
                     <Link
@@ -67,8 +68,8 @@ export default function Footer() {
                   : isCheckingAuth
                     ? <Spinner size={16} className="translate-y-[2px]" />
                     : <Link href={PATH_ADMIN_PHOTOS}>
-                        {appText.nav.admin}
-                      </Link>}
+                      {appText.nav.admin}
+                    </Link>}
               </div>
               <div className="flex items-center gap-2 h-10 shrink-0">
                 <LanguageSwitcher />

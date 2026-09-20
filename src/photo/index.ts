@@ -84,6 +84,9 @@ export interface PhotoDbInsert extends PhotoExif {
   extension: string
   blurData?: string
   caption?: string
+  titleZh?: string
+  captionZh?: string
+  semanticDescriptionZh?: string
   semanticDescription?: string
   tags?: string[]
   recipeTitle?: string
@@ -266,7 +269,7 @@ export const photoQuantityText = (
 ) =>
   includeParentheses
     ? `(${count} ${photoLabelForCount(count, appText, capitalize)})`
-    : `${count} ${photoLabelForCount(count, appText, capitalize)}`;  
+    : `${count} ${photoLabelForCount(count, appText, capitalize)}`;
 
 export const deleteConfirmationTextForPhoto = (
   photo: Photo,

@@ -1,4 +1,6 @@
 'use client';
+import { useUiText } from '@/i18n/UiText';
+import usePhotoLocalization from '@/photo/usePhotoLocalization';
 
 import {
   Photo,
@@ -208,6 +210,7 @@ function FolderPhotoImage({
   classNameImage?: string
   size?: 'small' | 'medium' | 'large'
 }) {
+  const localize = usePhotoLocalization();
   // Raw <img> avoids next/image client JS + decode() overhead across
   // hundreds of tiny folder tiles; still hit the optimizer at w=200
   const src = getNextImageUrlForRequest({
@@ -222,7 +225,7 @@ function FolderPhotoImage({
     <div className={clsx('flex relative', className)}>
       <img
         src={src}
-        alt={altTextForPhoto(photo)}
+        alt={altTextForPhoto(localize(photo))}
         className={clsx(
           classNameImage,
           'bg-gray-400/20 dark:bg-gray-950/25',
@@ -259,6 +262,7 @@ export default function PhotoFolder({
   href?: string
   maxPhotos?: number
 }) {
+  const uiText = useUiText();
   const {
     photosToShow,
     gridClass,
@@ -459,14 +463,14 @@ export default function PhotoFolder({
                   )}>
                     {photo.colorData.ai &&
                       <ColorDot
-                        title="AI"
+                        title={uiText('AI')}
                         className="size-2!"
                         color={photo.colorData.ai}
                         includeTooltip={false}
                       />}
                     {photo.colorData.colors[0] &&
                       <ColorDot
-                        title="Color 1"
+                        title={uiText('Color 1')}
                         className="size-2!"
                         color={photo.colorData.colors[0]}
                         includeTooltip={false}

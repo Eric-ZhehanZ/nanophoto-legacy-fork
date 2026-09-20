@@ -19,10 +19,11 @@ export default async function AdminTagsTable({
 
   return (
     <AdminTable>
-      {sortTags(tags).map(({ tag, count }) =>
+      {sortTags(tags).map(({ tag, count, nameEn, nameZh }) =>
         <Fragment key={tag}>
           <div className="pr-2 col-span-2">
             <AdminTagBadge {...{ tag, count }} />
+            <div className="text-xs text-dim">{nameEn} / {nameZh || '—'}</div>
           </div>
           <div className={clsx(
             'flex flex-nowrap',

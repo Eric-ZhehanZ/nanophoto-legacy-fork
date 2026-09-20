@@ -1,4 +1,5 @@
 'use client';
+import { useUiText } from '@/i18n/UiText';
 
 import {
   PATH_ADMIN_ALBUMS,
@@ -48,6 +49,7 @@ export default function AdminAppMenu({
   isOpen?: boolean
   setIsOpen?: (isOpen: boolean) => void
 }) {
+  const uiText = useUiText();
   const {
     photosCountTotal = 0,
     photosCountNeedSync = 0,
@@ -266,7 +268,7 @@ export default function AdminAppMenu({
       alignOffset={-(SWITCHER_ITEM_WIDTH * 3)}
       onOpen={refreshAdminData}
       sections={sections}
-      ariaLabel="Admin Menu"
+      ariaLabel={uiText('Admin Menu')}
       classNameButtonOpen={clsx(
         '[&>*>*]:translate-y-[8px]',
         '[&>*>*]:duration-300',

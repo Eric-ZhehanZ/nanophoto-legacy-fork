@@ -1,3 +1,4 @@
+import UiText from '@/i18n/UiText';
 import { Photo } from '../photo';
 import IconFull from '@/components/icons/IconFull';
 import IconGrid from '@/components/icons/IconGrid';
@@ -80,9 +81,7 @@ export default function TemplateImageResponse({
             display: 'flex',
             justifyContent: 'flex-end',
             flexGrow: 1,
-          }}>
-            photos.sambecker.com
-          </div>
+          }}> <UiText text="photos.sambecker.com" /> </div>
         </div>}
       <div style={{
         display: 'flex',

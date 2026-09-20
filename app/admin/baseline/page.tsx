@@ -1,4 +1,6 @@
 'use client';
+import { useUiText } from '@/i18n/UiText';
+import UiText from '@/i18n/UiText';
 
 import PhotoCamera from '@/camera/PhotoCamera';
 import Badge from '@/components/Badge';
@@ -18,6 +20,7 @@ import { IoImageSharp } from 'react-icons/io5';
 const DEBUG_LINES = new Array(30).fill(null);
 
 export default function ComponentsPage() {
+  const uiText = useUiText();
   const {
     shouldShowBaselineGrid,
     setShouldShowBaselineGrid,
@@ -35,10 +38,10 @@ export default function ComponentsPage() {
       contentMain={<>
         <h1 className="flex mb-6">
           <div className="grow">
-            <span>Baseline Grid: </span>
+            <span> <UiText text="Baseline Grid:" /> </span>
             <span className="text-dim">
-              <span className="md:hidden">13.5px / 19px</span>
-              <span className="hidden md:inline-block">14px / 20px</span>
+              <span className="md:hidden"> <UiText text="13.5px / 19px" /> </span>
+              <span className="hidden md:inline-block"> <UiText text="14px / 20px" /> </span>
             </span>
           </div>
           <div className={clsx(
@@ -46,13 +49,13 @@ export default function ComponentsPage() {
             '*:inline-flex *:gap-1 [&_input]:-translate-y-0.5',
           )}>
             <FieldsetWithStatus
-              label="Grid"
+              label={uiText('Grid')}
               type="checkbox"
               value={shouldShowBaselineGrid ? 'true' : 'false'}
               onChange={e => setShouldShowBaselineGrid?.(e === 'true')}
             />
             <FieldsetWithStatus
-              label="Components"
+              label={uiText('Components')}
               type="checkbox"
               value={debugComponents ? 'true' : 'false'}
               onChange={e => setDebugComponents(e === 'true')}
@@ -65,56 +68,40 @@ export default function ComponentsPage() {
               <LabeledIcon
                 icon={<FaCamera size={12} />}
                 debug={debugComponents}
-              >
-                Camera<br />Line two
-              </LabeledIcon>
+              > <UiText text="Camera" /> <br /> <UiText text="Line two" /> </LabeledIcon>
             </div>
             <div>
-              <LabeledIcon icon={<IoImageSharp />} debug={debugComponents}>
-                Image
-              </LabeledIcon>
+              <LabeledIcon icon={<IoImageSharp />} debug={debugComponents}> <UiText text="Image" /> </LabeledIcon>
             </div>
             <div>
-              <LabeledIcon icon={<FaUserAltSlash />} debug={debugComponents}>
-                Image
-              </LabeledIcon>
+              <LabeledIcon icon={<FaUserAltSlash />} debug={debugComponents}> <UiText text="Image" /> </LabeledIcon>
             </div>
             <div>
-              <LabeledIcon icon={<FaUserAltSlash />} debug={debugComponents}>
-                Image
-              </LabeledIcon>
+              <LabeledIcon icon={<FaUserAltSlash />} debug={debugComponents}> <UiText text="Image" /> </LabeledIcon>
             </div>
             <div>
-              <LabeledIcon icon={<FaUserAltSlash />} debug={debugComponents}>
-                Image
-              </LabeledIcon>
+              <LabeledIcon icon={<FaUserAltSlash />} debug={debugComponents}> <UiText text="Image" /> </LabeledIcon>
             </div>
             <div>
-              <LabeledIcon icon={<FaUserAltSlash />} debug={debugComponents}>
-                Image
-              </LabeledIcon>
+              <LabeledIcon icon={<FaUserAltSlash />} debug={debugComponents}> <UiText text="Image" /> </LabeledIcon>
             </div>
             <div>
-              <LabeledIcon icon={<FaUserAltSlash />} debug={debugComponents}>
-                Image
-              </LabeledIcon>
+              <LabeledIcon icon={<FaUserAltSlash />} debug={debugComponents}> <UiText text="Image" /> </LabeledIcon>
             </div>
             <div>
-              <LabeledIcon icon={<FaUserAltSlash />} debug={debugComponents}>
-                Image
-              </LabeledIcon>
+              <LabeledIcon icon={<FaUserAltSlash />} debug={debugComponents}> <UiText text="Image" /> </LabeledIcon>
             </div>
             <div>
               <EntityLink
                 icon={<FaHandSparkles />}
-                label="Image"
+                label={uiText('Image')}
                 debug={debugComponents}
               />
             </div>
             <div>
               <EntityLink
                 icon={<FaHandSparkles />}
-                label="Image"
+                label={uiText('Image')}
                 badged
                 debug={debugComponents}
               />
@@ -123,14 +110,12 @@ export default function ComponentsPage() {
               <LabeledIcon
                 icon={<IoMdCamera size={12} />}
                 debug={debugComponents}
-              >
-                Canon Mark III
-              </LabeledIcon>
+              > <UiText text="Canon Mark III" /> </LabeledIcon>
             </div>
             <div>
               <EntityLink
                 icon={<PhotoFilmIcon film="astia" />}
-                label="Astia/Soft"
+                label={uiText('Astia/Soft')}
                 type="icon-last"
                 iconWide
                 badged
@@ -138,19 +123,15 @@ export default function ComponentsPage() {
               />
             </div>
             <div>
-              <LabeledIcon icon={<FaUserAltSlash />} debug={debugComponents}>
-                Image
-              </LabeledIcon>
+              <LabeledIcon icon={<FaUserAltSlash />} debug={debugComponents}> <UiText text="Image" /> </LabeledIcon>
             </div>
             <div>
-              <LabeledIcon icon={<FaUserAltSlash />} debug={debugComponents}>
-                Image
-              </LabeledIcon>
+              <LabeledIcon icon={<FaUserAltSlash />} debug={debugComponents}> <UiText text="Image" /> </LabeledIcon>
             </div>
             <div>
               <EntityLink
                 icon={<PhotoFilmIcon film="astia" />}
-                label="Astia/Soft"
+                label={uiText('Astia/Soft')}
                 type="icon-last"
                 iconWide
                 badged
@@ -158,19 +139,15 @@ export default function ComponentsPage() {
               />
             </div>
             <div>
-              <LabeledIcon icon={<FaUserAltSlash />} debug={debugComponents}>
-                Image
-              </LabeledIcon>
+              <LabeledIcon icon={<FaUserAltSlash />} debug={debugComponents}> <UiText text="Image" /> </LabeledIcon>
             </div>
             <div>
-              <LabeledIcon icon={<FaUserAltSlash />} debug={debugComponents}>
-                Image
-              </LabeledIcon>
+              <LabeledIcon icon={<FaUserAltSlash />} debug={debugComponents}> <UiText text="Image" /> </LabeledIcon>
             </div>
             <div>
               <EntityLink
                 icon={<></>}
-                label="Astia/Soft and another long line here"
+                label={uiText('Astia/Soft and another long line here')}
                 type="icon-last"
                 iconWide
                 badged
@@ -178,14 +155,12 @@ export default function ComponentsPage() {
               />
             </div>
             <div>
-              <LabeledIcon icon={<FaUserAltSlash />} debug={debugComponents}>
-                Image
-              </LabeledIcon>
+              <LabeledIcon icon={<FaUserAltSlash />} debug={debugComponents}> <UiText text="Image" /> </LabeledIcon>
             </div>
             <div>
               <EntityLink
                 icon={<PhotoFilmIcon film="astia" />}
-                label="Astia/Soft"
+                label={uiText('Astia/Soft')}
                 type="icon-last"
                 iconWide
                 badged
@@ -193,37 +168,31 @@ export default function ComponentsPage() {
               />
             </div>
             <div>
-              <LabeledIcon icon={<FaUserAltSlash />} debug={debugComponents}>
-                Image
-              </LabeledIcon>
+              <LabeledIcon icon={<FaUserAltSlash />} debug={debugComponents}> <UiText text="Image" /> </LabeledIcon>
             </div>
             <div className="flex items-center h-baseline">
-              <Badge type="small" uppercase>Optional</Badge>
+              <Badge type="small" uppercase> <UiText text="Optional" /> </Badge>
             </div>
             <div className="flex items-center h-baseline">
-              <Badge type="small">Optional</Badge>
+              <Badge type="small"> <UiText text="Optional" /> </Badge>
             </div>
             <div className="flex items-center h-baseline">
-              <Badge type="small" uppercase>Optional</Badge>
+              <Badge type="small" uppercase> <UiText text="Optional" /> </Badge>
             </div>
             <div className="flex items-center h-baseline">
-              <Badge type="small">Optional</Badge>
+              <Badge type="small"> <UiText text="Optional" /> </Badge>
             </div>
             <div className="flex items-center h-baseline">
-              <Badge type="small" uppercase>Optional</Badge>
+              <Badge type="small" uppercase> <UiText text="Optional" /> </Badge>
             </div>
             <div className="flex items-center h-baseline">
-              <Badge type="small">Optional</Badge>
+              <Badge type="small"> <UiText text="Optional" /> </Badge>
             </div>
             <div>
-              <LabeledIcon icon={<FaUserAltSlash />} debug={debugComponents}>
-                Image
-              </LabeledIcon>
+              <LabeledIcon icon={<FaUserAltSlash />} debug={debugComponents}> <UiText text="Image" /> </LabeledIcon>
             </div>
             <div>
-              <LabeledIcon icon={<FaUserAltSlash />} debug={debugComponents}>
-                Image
-              </LabeledIcon>
+              <LabeledIcon icon={<FaUserAltSlash />} debug={debugComponents}> <UiText text="Image" /> </LabeledIcon>
             </div>
           </div>
           <div className={clsx(
@@ -231,8 +200,7 @@ export default function ComponentsPage() {
             '*:flex',
           )}>
             {DEBUG_LINES.map((_, i) =>
-              <div key={i}>
-                Line {(i + 1).toString().padStart(2, '0')}
+              <div key={i}> <UiText text="Line" /> {(i + 1).toString().padStart(2, '0')}
               </div>,
             )}
           </div>
